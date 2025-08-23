@@ -5,4 +5,4 @@ Start: Form Submmission
 > Append Row In Sheet: Info is added to sheet
 > QR Code Generated: the E-mail sent containg a QR Code
 > QR Code Turns Into File: the QR Code is now a .png file
-> Send E-Mail
+> Send E-Mail.
