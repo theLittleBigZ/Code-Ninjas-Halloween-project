@@ -1,0 +1,5 @@
+body { font-family: Arial, sans-serif; margin: 2em; background: #f7f7f7; }
+h1 { color: #7c2e1c; }
+form, #photobooth-controls { background: #fff; padding: 1em; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
+button { background: #7c2e1c; color: #fff; border: none; padding: 0.5em 1em; border-radius: 4px; cursor: pointer; }
+button:disabled { background: #ccc; }
