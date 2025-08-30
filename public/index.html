@@ -7,11 +7,16 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Photo Booth Registration</h1>
+  <h1>Code Ninjas Stouffville Photo Booth Registration Form</h1>
   <form id="registration-form">
     <!-- TODO: Add form fields for parent/guardian info, child info, etc. -->
     <!-- Example: -->
     <label>First Name: <input type="text" name="firstName" required></label><br>
+    <label>Last Name: <input type="text" name="lastName" required></label><br>
+    <label>Phone Number: <input type="tel" name="phoneNumber" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"></label><br>
+    <label>Email: <input type ="email" name="email" required></label><br>
+    <label>Secondary Email: <input type ="email" name="email"></label><br>
+    <label>Amount of People: <input type ="number" name="amountOfPeople" required></label><br>
     <!-- Add more fields as needed -->
     <button type="submit">Register</button>
   </form>
