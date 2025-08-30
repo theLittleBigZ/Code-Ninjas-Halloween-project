@@ -40,14 +40,15 @@
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // Black hole position (center right)
+    // Black hole position (center)
     const blackHole = {
-      x: () => canvas.width * 0.75,
+      x: () => canvas.width * 0.5,
       y: () => canvas.height * 0.5,
-      r: 70
+      r: 90
     };
 
     // Generate city buildings
+    // 3D perspective for buildings
     function genBuildings() {
       const buildings = [];
       const baseY = canvas.height * 0.7;
@@ -55,13 +56,16 @@
         const w = 40 + Math.random() * 40;
         const h = 80 + Math.random() * 120;
         const x = i * (canvas.width / 12) + Math.random() * 20;
-        buildings.push({x, y: baseY - h, w, h, color: `#${Math.floor(Math.random()*888+111)}88`});
+        // z for 3D effect (0=close, 1=far)
+        const z = 0.2 + 0.8 * Math.random();
+        buildings.push({x, y: baseY - h, w, h, color: `#${Math.floor(Math.random()*888+111)}88`, z});
       }
       return buildings;
     }
     let buildings = genBuildings();
 
     // Flying objects (cars, trucks, buildings)
+    // 3D perspective for flying objects
     function genObject() {
       const types = ['car','truck','building'];
       const t = types[Math.floor(Math.random()*types.length)];
@@ -69,11 +73,14 @@
       if (t==='car') { w=40; h=20; color='#e74c3c'; }
       else if (t==='truck') { w=60; h=25; color='#2980b9'; }
       else { w=40+Math.random()*40; h=60+Math.random()*60; color='#888'; }
-      // Start from left or bottom
-      let side = Math.random()<0.5?'left':'bottom';
-      let x = side==='left'? -w : Math.random()*canvas.width*0.7;
-      let y = side==='left'? canvas.height*0.7+Math.random()*canvas.height*0.3 : canvas.height+h;
-      return {x, y, w, h, color, t, vx:0, vy:0};
+      // z for 3D effect (0=close, 1=far)
+      let z = 0.2 + 0.8 * Math.random();
+      // Start from random edge
+      let angle = Math.random() * 2 * Math.PI;
+      let dist = Math.max(canvas.width, canvas.height) * (0.5 + 0.5 * Math.random());
+      let x = blackHole.x() + Math.cos(angle) * dist;
+      let y = blackHole.y() + Math.sin(angle) * dist;
+      return {x, y, w, h, color, t, vx:0, vy:0, z};
     }
     let objects = [];
     for (let i=0;i<8;i++) objects.push(genObject());
@@ -99,43 +106,74 @@
       ctx2.restore();
     }
 
+    // 3D street with perspective
     function drawStreet(ctx2) {
       ctx2.save();
+      // Draw street as a trapezoid for 3D effect
+      let roadWTop = canvas.width * 0.18;
+      let roadWBot = canvas.width * 0.7;
+      let roadYTop = canvas.height * 0.45;
+      let roadYBot = canvas.height * 0.95;
+      ctx2.beginPath();
+      ctx2.moveTo(canvas.width/2 - roadWTop/2, roadYTop);
+      ctx2.lineTo(canvas.width/2 + roadWTop/2, roadYTop);
+      ctx2.lineTo(canvas.width/2 + roadWBot/2, roadYBot);
+      ctx2.lineTo(canvas.width/2 - roadWBot/2, roadYBot);
+      ctx2.closePath();
       ctx2.fillStyle = '#444';
-      ctx2.fillRect(0, canvas.height*0.7, canvas.width, canvas.height*0.3);
+      ctx2.fill();
+      // Lane lines (perspective)
       ctx2.strokeStyle = '#fff';
       ctx2.lineWidth = 4;
-      for (let i=0;i<canvas.width;i+=60) {
+      for (let i=0;i<8;i++) {
+        let t = i/8;
+        let x1 = canvas.width/2 - (roadWTop/2)*(1-t) - (roadWBot/2)*t;
+        let x2 = canvas.width/2 + (roadWTop/2)*(1-t) + (roadWBot/2)*t;
+        let y = roadYTop*(1-t) + roadYBot*t;
         ctx2.beginPath();
-        ctx2.moveTo(i, canvas.height*0.85);
-        ctx2.lineTo(i+30, canvas.height*0.85);
+        ctx2.moveTo(x1+20, y);
+        ctx2.lineTo(x2-20, y);
         ctx2.stroke();
       }
       ctx2.restore();
     }
 
+    // 3D buildings with perspective
     function drawBuildings(ctx2) {
       for (const b of buildings) {
         ctx2.save();
+        // Perspective scaling
+        let scale = 0.5 + 1.2 * (1-b.z);
+        let bx = (b.x-canvas.width/2)*scale + canvas.width/2;
+        let by = (b.y-canvas.height*0.7)*scale + canvas.height*0.7;
         ctx2.fillStyle = b.color;
-        ctx2.fillRect(b.x, b.y, b.w, b.h);
+        ctx2.fillRect(bx, by, b.w*scale, b.h*scale);
         ctx2.restore();
       }
     }
 
+    // 3D objects with perspective
     function drawObjects(ctx2) {
       for (const o of objects) {
         ctx2.save();
+        // Perspective scaling based on distance to black hole
+        let dx = o.x - blackHole.x();
+        let dy = o.y - blackHole.y();
+        let dist = Math.sqrt(dx*dx+dy*dy);
+        let maxDist = Math.max(canvas.width, canvas.height)*0.6;
+        let scale = 0.25 + 1.2 * Math.min(dist/maxDist,1);
+        let ox = (o.x-canvas.width/2)*scale + canvas.width/2;
+        let oy = (o.y-canvas.height/2)*scale + canvas.height/2;
         ctx2.fillStyle = o.color;
         if (o.t==='car' || o.t==='truck') {
-          ctx2.fillRect(o.x, o.y, o.w, o.h);
+          ctx2.fillRect(ox, oy, o.w*scale, o.h*scale);
           ctx2.beginPath();
-          ctx2.arc(o.x+o.w*0.2, o.y+o.h, 5, 0, 2*Math.PI);
-          ctx2.arc(o.x+o.w*0.8, o.y+o.h, 5, 0, 2*Math.PI);
+          ctx2.arc(ox+o.w*scale*0.2, oy+o.h*scale, 5*scale, 0, 2*Math.PI);
+          ctx2.arc(ox+o.w*scale*0.8, oy+o.h*scale, 5*scale, 0, 2*Math.PI);
           ctx2.fillStyle = '#222';
           ctx2.fill();
         } else {
-          ctx2.fillRect(o.x, o.y, o.w, o.h);
+          ctx2.fillRect(ox, oy, o.w*scale, o.h*scale);
         }
         ctx2.restore();
       }
@@ -143,8 +181,8 @@
 
     function updateObjects() {
       for (const o of objects) {
-        let dx = blackHole.x() - (o.x+o.w/2);
-        let dy = blackHole.y() - (o.y+o.h/2);
+        let dx = blackHole.x() - o.x;
+        let dy = blackHole.y() - o.y;
         let dist = Math.sqrt(dx*dx+dy*dy);
         let speed = 2 + 6*(1-Math.min(dist/1000,1));
         o.vx = dx/dist*speed;
@@ -154,8 +192,7 @@
       }
       for (let i=objects.length-1;i>=0;i--) {
         let o = objects[i];
-        let cx = o.x+o.w/2, cy = o.y+o.h/2;
-        let d = Math.sqrt((cx-blackHole.x())**2+(cy-blackHole.y())**2);
+        let d = Math.sqrt((o.x-blackHole.x())**2+(o.y-blackHole.y())**2);
         if (d < blackHole.r+10) {
           objects.splice(i,1);
           objects.push(genObject());
