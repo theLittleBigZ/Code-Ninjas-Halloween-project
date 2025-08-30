@@ -1,5 +1,79 @@
-body { font-family: Arial, sans-serif; margin: 2em; background: #f7f7f7; }
-h1 { color: #7c2e1c; }
-form, #photobooth-controls { background: #fff; padding: 1em; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
-button { background: #7c2e1c; color: #fff; border: none; padding: 0.5em 1em; border-radius: 4px; cursor: pointer; }
-button:disabled { background: #ccc; }
+
+
+body {
+	font-family: 'Segoe UI', 'Arial', sans-serif;
+	background: linear-gradient(120deg, #23272a 0%, #00aaff 100%);
+	min-height: 100vh;
+	margin: 0;
+	text-align: center;
+}
+
+h1 {
+	color: #00aaff;
+	font-size: 2.2em;
+	letter-spacing: 2px;
+	text-shadow: 2px 2px 8px #0004;
+	margin-bottom: 0.5em;
+}
+form, #photobooth-controls {
+	background: #fff;
+	padding: 2em 2em 1.5em 2em;
+	border-radius: 16px;
+	box-shadow: 0 4px 24px #0002;
+	max-width: 400px;
+	margin: 2em auto;
+	border: 2px solid #00aaff;
+	text-align: center;
+}
+
+label {
+	display: block;
+	margin-bottom: 0.5em;
+	color: #23272a;
+	font-weight: bold;
+	font-size: 1.1em;
+	text-align: center;
+}
+
+input, select {
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+	padding: 0.7em;
+	margin-bottom: 1.2em;
+	border: 1px solid #00aaff;
+	border-radius: 6px;
+	font-size: 1em;
+	background: #f7f7f7;
+	transition: border-color 0.2s;
+}
+
+input:focus, select:focus {
+	border-color: #23272a;
+	outline: none;
+}
+
+button {
+	background: linear-gradient(90deg, #00aaff 0%, #23272a 100%);
+	color: #fff;
+	border: none;
+	padding: 0.7em 2em;
+	border-radius: 8px;
+	cursor: pointer;
+	font-size: 1.1em;
+	font-weight: bold;
+	box-shadow: 0 2px 8px #00aaff44;
+	transition: background 0.2s, transform 0.2s;
+}
+
+button:hover:not(:disabled) {
+	background: linear-gradient(90deg, #23272a 0%, #00aaff 100%);
+	transform: translateY(-2px) scale(1.04);
+}
+
+button:disabled {
+	background: #ccc;
+	color: #888;
+	cursor: not-allowed;
+}
