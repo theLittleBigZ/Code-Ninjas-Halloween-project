@@ -25,20 +25,25 @@
   </div>
   <script src="script.js"></script>
   <script>
-    // Canvas animation for city, black hole, and flying objects
+    // Canvas animation for city, black hole, and flying objects with bulge and chromatic effects
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
+    // Offscreen canvas for drawing scene
+    const offCanvas = document.createElement('canvas');
+    const offCtx = offCanvas.getContext('2d');
     function resizeCanvas() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      offCanvas.width = window.innerWidth;
+      offCanvas.height = window.innerHeight;
     }
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
     // Black hole position (center right)
     const blackHole = {
-      x: canvas.width * 0.75,
-      y: canvas.height * 0.5,
+      x: () => canvas.width * 0.75,
+      y: () => canvas.height * 0.5,
       r: 70
     };
 
@@ -73,77 +78,73 @@
     let objects = [];
     for (let i=0;i<8;i++) objects.push(genObject());
 
-    function drawBlackHole() {
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(blackHole.x, blackHole.y, blackHole.r, 0, 2*Math.PI);
-      ctx.fillStyle = 'black';
-      ctx.shadowColor = '#444';
-      ctx.shadowBlur = 40;
-      ctx.fill();
-      ctx.restore();
+    function drawBlackHole(ctx2) {
+      ctx2.save();
+      ctx2.beginPath();
+      ctx2.arc(blackHole.x(), blackHole.y(), blackHole.r, 0, 2*Math.PI);
+      ctx2.fillStyle = 'black';
+      ctx2.shadowColor = '#444';
+      ctx2.shadowBlur = 40;
+      ctx2.fill();
+      ctx2.restore();
       // Accretion disk
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(blackHole.x, blackHole.y, blackHole.r+18, 0, 2*Math.PI);
-      ctx.strokeStyle = 'rgba(255,255,200,0.5)';
-      ctx.lineWidth = 12;
-      ctx.shadowColor = 'yellow';
-      ctx.shadowBlur = 20;
-      ctx.stroke();
-      ctx.restore();
+      ctx2.save();
+      ctx2.beginPath();
+      ctx2.arc(blackHole.x(), blackHole.y(), blackHole.r+18, 0, 2*Math.PI);
+      ctx2.strokeStyle = 'rgba(255,255,200,0.5)';
+      ctx2.lineWidth = 12;
+      ctx2.shadowColor = 'yellow';
+      ctx2.shadowBlur = 20;
+      ctx2.stroke();
+      ctx2.restore();
     }
 
-    function drawStreet() {
-      // Street
-      ctx.save();
-      ctx.fillStyle = '#444';
-      ctx.fillRect(0, canvas.height*0.7, canvas.width, canvas.height*0.3);
-      // Lane lines
-      ctx.strokeStyle = '#fff';
-      ctx.lineWidth = 4;
+    function drawStreet(ctx2) {
+      ctx2.save();
+      ctx2.fillStyle = '#444';
+      ctx2.fillRect(0, canvas.height*0.7, canvas.width, canvas.height*0.3);
+      ctx2.strokeStyle = '#fff';
+      ctx2.lineWidth = 4;
       for (let i=0;i<canvas.width;i+=60) {
-        ctx.beginPath();
-        ctx.moveTo(i, canvas.height*0.85);
-        ctx.lineTo(i+30, canvas.height*0.85);
-        ctx.stroke();
+        ctx2.beginPath();
+        ctx2.moveTo(i, canvas.height*0.85);
+        ctx2.lineTo(i+30, canvas.height*0.85);
+        ctx2.stroke();
       }
-      ctx.restore();
+      ctx2.restore();
     }
 
-    function drawBuildings() {
+    function drawBuildings(ctx2) {
       for (const b of buildings) {
-        ctx.save();
-        ctx.fillStyle = b.color;
-        ctx.fillRect(b.x, b.y, b.w, b.h);
-        ctx.restore();
+        ctx2.save();
+        ctx2.fillStyle = b.color;
+        ctx2.fillRect(b.x, b.y, b.w, b.h);
+        ctx2.restore();
       }
     }
 
-    function drawObjects() {
+    function drawObjects(ctx2) {
       for (const o of objects) {
-        ctx.save();
-        ctx.fillStyle = o.color;
+        ctx2.save();
+        ctx2.fillStyle = o.color;
         if (o.t==='car' || o.t==='truck') {
-          ctx.fillRect(o.x, o.y, o.w, o.h);
-          // Wheels
-          ctx.beginPath();
-          ctx.arc(o.x+o.w*0.2, o.y+o.h, 5, 0, 2*Math.PI);
-          ctx.arc(o.x+o.w*0.8, o.y+o.h, 5, 0, 2*Math.PI);
-          ctx.fillStyle = '#222';
-          ctx.fill();
+          ctx2.fillRect(o.x, o.y, o.w, o.h);
+          ctx2.beginPath();
+          ctx2.arc(o.x+o.w*0.2, o.y+o.h, 5, 0, 2*Math.PI);
+          ctx2.arc(o.x+o.w*0.8, o.y+o.h, 5, 0, 2*Math.PI);
+          ctx2.fillStyle = '#222';
+          ctx2.fill();
         } else {
-          ctx.fillRect(o.x, o.y, o.w, o.h);
+          ctx2.fillRect(o.x, o.y, o.w, o.h);
         }
-        ctx.restore();
+        ctx2.restore();
       }
     }
 
     function updateObjects() {
       for (const o of objects) {
-        // Vector toward black hole
-        let dx = blackHole.x - (o.x+o.w/2);
-        let dy = blackHole.y - (o.y+o.h/2);
+        let dx = blackHole.x() - (o.x+o.w/2);
+        let dy = blackHole.y() - (o.y+o.h/2);
         let dist = Math.sqrt(dx*dx+dy*dy);
         let speed = 2 + 6*(1-Math.min(dist/1000,1));
         o.vx = dx/dist*speed;
@@ -151,11 +152,10 @@
         o.x += o.vx;
         o.y += o.vy;
       }
-      // Remove objects that reach the black hole, add new ones
       for (let i=objects.length-1;i>=0;i--) {
         let o = objects[i];
         let cx = o.x+o.w/2, cy = o.y+o.h/2;
-        let d = Math.sqrt((cx-blackHole.x)**2+(cy-blackHole.y)**2);
+        let d = Math.sqrt((cx-blackHole.x())**2+(cy-blackHole.y())**2);
         if (d < blackHole.r+10) {
           objects.splice(i,1);
           objects.push(genObject());
@@ -163,13 +163,50 @@
       }
     }
 
+    // Bulge and chromatic effect
+    function bulgeAndChromatic(srcCtx, destCtx) {
+      const w = canvas.width, h = canvas.height;
+      const src = srcCtx.getImageData(0,0,w,h);
+      const dest = destCtx.createImageData(w,h);
+      const cx = blackHole.x(), cy = blackHole.y(), r = blackHole.r*2.2;
+      for (let y=0; y<h; y++) {
+        for (let x=0; x<w; x++) {
+          let dx = x-cx, dy = y-cy;
+          let dist = Math.sqrt(dx*dx+dy*dy);
+          let angle = Math.atan2(dy,dx);
+          let bulge = 1;
+          if (dist < r) {
+            // Bulge: push pixels away from center, more near the event horizon
+            let f = 1 + 0.45*Math.pow(1-(dist/r),2);
+            bulge = f;
+          }
+          // Chromatic: offset RGB channels differently
+          let idx = (y*w+x)*4;
+          let getColor = (chOfs) => {
+            let rx = Math.round(cx + (dx*bulge) + chOfs*Math.cos(angle+0.2));
+            let ry = Math.round(cy + (dy*bulge) + chOfs*Math.sin(angle+0.2));
+            if (rx<0||rx>=w||ry<0||ry>=h) return 0;
+            let i2 = (ry*w+rx)*4;
+            return src.data[i2];
+          };
+          dest.data[idx+0] = getColor(4); // R
+          dest.data[idx+1] = getColor(-4); // G
+          dest.data[idx+2] = getColor(0); // B
+          dest.data[idx+3] = src.data[idx+3];
+        }
+      }
+      destCtx.putImageData(dest,0,0);
+    }
+
     function animate() {
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      drawStreet();
-      drawBuildings();
-      drawBlackHole();
-      drawObjects();
+      offCtx.clearRect(0,0,canvas.width,canvas.height);
+      drawStreet(offCtx);
+      drawBuildings(offCtx);
+      drawBlackHole(offCtx);
+      drawObjects(offCtx);
       updateObjects();
+      // Bulge and chromatic effect
+      bulgeAndChromatic(offCtx, ctx);
       requestAnimationFrame(animate);
     }
     animate();
