@@ -7,19 +7,172 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Photo Booth Registration</h1>
-  <form id="registration-form">
-    <!-- TODO: Add form fields for parent/guardian info, child info, etc. -->
-    <!-- Example: -->
-    <label>First Name: <input type="text" name="firstName" required></label><br>
-    <label>Last Name: <input type="text" name="lastName" required></label><br>
-    <label>Email Address: <input type="text" name="emailAddress" required></label><br>
-    <label>Phone Number: <input type="tel" name="phoneNumber" required></label><br>
-    <label>How many pictures are being taken?: <input type="number" name="pictureAmount" pattern=(0-9)-(0-9)-(0-9) required></label><br>
-    <!-- Add more fields as needed -->
-    <button type="submit">Register</button>
-  </form>
-  <div id="registration-result"></div>
+  <canvas id="bg-canvas" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:-1;"></canvas>
+  <div style="position:relative;z-index:1;">
+    <h1>Photo Booth Registration</h1>
+    <form id="registration-form">
+      <!-- TODO: Add form fields for parent/guardian info, child info, etc. -->
+      <!-- Example: -->
+      <label>First Name: <input type="text" name="firstName" required></label><br>
+      <label>Last Name: <input type="text" name="lastName" required></label><br>
+      <label>Email Address: <input type="text" name="emailAddress" required></label><br>
+      <label>Phone Number: <input type="tel" name="phoneNumber" required></label><br>
+      <label>How many pictures are being taken?: <input type="number" name="pictureAmount" pattern=(0-9)-(0-9)-(0-9) required></label><br>
+      <!-- Add more fields as needed -->
+      <button type="submit">Register</button>
+    </form>
+    <div id="registration-result"></div>
+  </div>
   <script src="script.js"></script>
+  <script>
+    // Canvas animation for city, black hole, and flying objects
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // Black hole position (center right)
+    const blackHole = {
+      x: canvas.width * 0.75,
+      y: canvas.height * 0.5,
+      r: 70
+    };
+
+    // Generate city buildings
+    function genBuildings() {
+      const buildings = [];
+      const baseY = canvas.height * 0.7;
+      for (let i = 0; i < 12; i++) {
+        const w = 40 + Math.random() * 40;
+        const h = 80 + Math.random() * 120;
+        const x = i * (canvas.width / 12) + Math.random() * 20;
+        buildings.push({x, y: baseY - h, w, h, color: `#${Math.floor(Math.random()*888+111)}88`});
+      }
+      return buildings;
+    }
+    let buildings = genBuildings();
+
+    // Flying objects (cars, trucks, buildings)
+    function genObject() {
+      const types = ['car','truck','building'];
+      const t = types[Math.floor(Math.random()*types.length)];
+      let w, h, color;
+      if (t==='car') { w=40; h=20; color='#e74c3c'; }
+      else if (t==='truck') { w=60; h=25; color='#2980b9'; }
+      else { w=40+Math.random()*40; h=60+Math.random()*60; color='#888'; }
+      // Start from left or bottom
+      let side = Math.random()<0.5?'left':'bottom';
+      let x = side==='left'? -w : Math.random()*canvas.width*0.7;
+      let y = side==='left'? canvas.height*0.7+Math.random()*canvas.height*0.3 : canvas.height+h;
+      return {x, y, w, h, color, t, vx:0, vy:0};
+    }
+    let objects = [];
+    for (let i=0;i<8;i++) objects.push(genObject());
+
+    function drawBlackHole() {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(blackHole.x, blackHole.y, blackHole.r, 0, 2*Math.PI);
+      ctx.fillStyle = 'black';
+      ctx.shadowColor = '#444';
+      ctx.shadowBlur = 40;
+      ctx.fill();
+      ctx.restore();
+      // Accretion disk
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(blackHole.x, blackHole.y, blackHole.r+18, 0, 2*Math.PI);
+      ctx.strokeStyle = 'rgba(255,255,200,0.5)';
+      ctx.lineWidth = 12;
+      ctx.shadowColor = 'yellow';
+      ctx.shadowBlur = 20;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawStreet() {
+      // Street
+      ctx.save();
+      ctx.fillStyle = '#444';
+      ctx.fillRect(0, canvas.height*0.7, canvas.width, canvas.height*0.3);
+      // Lane lines
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 4;
+      for (let i=0;i<canvas.width;i+=60) {
+        ctx.beginPath();
+        ctx.moveTo(i, canvas.height*0.85);
+        ctx.lineTo(i+30, canvas.height*0.85);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function drawBuildings() {
+      for (const b of buildings) {
+        ctx.save();
+        ctx.fillStyle = b.color;
+        ctx.fillRect(b.x, b.y, b.w, b.h);
+        ctx.restore();
+      }
+    }
+
+    function drawObjects() {
+      for (const o of objects) {
+        ctx.save();
+        ctx.fillStyle = o.color;
+        if (o.t==='car' || o.t==='truck') {
+          ctx.fillRect(o.x, o.y, o.w, o.h);
+          // Wheels
+          ctx.beginPath();
+          ctx.arc(o.x+o.w*0.2, o.y+o.h, 5, 0, 2*Math.PI);
+          ctx.arc(o.x+o.w*0.8, o.y+o.h, 5, 0, 2*Math.PI);
+          ctx.fillStyle = '#222';
+          ctx.fill();
+        } else {
+          ctx.fillRect(o.x, o.y, o.w, o.h);
+        }
+        ctx.restore();
+      }
+    }
+
+    function updateObjects() {
+      for (const o of objects) {
+        // Vector toward black hole
+        let dx = blackHole.x - (o.x+o.w/2);
+        let dy = blackHole.y - (o.y+o.h/2);
+        let dist = Math.sqrt(dx*dx+dy*dy);
+        let speed = 2 + 6*(1-Math.min(dist/1000,1));
+        o.vx = dx/dist*speed;
+        o.vy = dy/dist*speed;
+        o.x += o.vx;
+        o.y += o.vy;
+      }
+      // Remove objects that reach the black hole, add new ones
+      for (let i=objects.length-1;i>=0;i--) {
+        let o = objects[i];
+        let cx = o.x+o.w/2, cy = o.y+o.h/2;
+        let d = Math.sqrt((cx-blackHole.x)**2+(cy-blackHole.y)**2);
+        if (d < blackHole.r+10) {
+          objects.splice(i,1);
+          objects.push(genObject());
+        }
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      drawStreet();
+      drawBuildings();
+      drawBlackHole();
+      drawObjects();
+      updateObjects();
+      requestAnimationFrame(animate);
+    }
+    animate();
+  </script>
 </body>
 </html>
