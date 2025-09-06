@@ -51,23 +51,14 @@ document.addEventListener('DOMContentLoaded', function() {
       ctx.restore();
     }
     function animateTriangles() {
-      // Helper: distance from point to line segment
-      function pointToSegmentDist(px, py, x1, y1, x2, y2) {
-        const dx = x2 - x1;
-        const dy = y2 - y1;
-        if (dx === 0 && dy === 0) return Math.sqrt((px-x1)**2 + (py-y1)**2);
-        let t = ((px-x1)*dx + (py-y1)*dy) / (dx*dx + dy*dy);
-        t = Math.max(0, Math.min(1, t));
-        const lx = x1 + t*dx;
-        const ly = y1 + t*dy;
-        return Math.sqrt((px-lx)**2 + (py-ly)**2);
-      }
       ctx.clearRect(0, 0, triCanvas.width, triCanvas.height);
       const time = Date.now();
       const edgePushStrength = 0.012;
       const edgePushDistance = 120;
       const pointRepelStrength = 0.008;
       const minDist = 40;
+      // Gather all points
+      const allPoints = triangles.flatMap(tri => tri.points);
       triangles.forEach(tri => {
         // Move the center
         tri.center.x += tri.center.vx;
@@ -87,48 +78,24 @@ document.addEventListener('DOMContentLoaded', function() {
         // Limit velocity
         tri.center.vx = Math.max(-1.2, Math.min(1.2, tri.center.vx));
         tri.center.vy = Math.max(-1.2, Math.min(1.2, tri.center.vy));
-        // Animate points and repel them from each other
+        // Animate points and repel them from all other points
         tri.points.forEach((pt, i) => {
           pt.angle += pt.speed;
           const wobble = Math.sin(time * 0.001 + pt.offset) * 0.5 + Math.cos(time * 0.0012 + pt.offset) * 0.5;
           pt.x = tri.center.x + Math.cos(pt.angle + wobble) * pt.radius + Math.sin(time * 0.0007 + pt.offset) * 12;
           pt.y = tri.center.y + Math.sin(pt.angle + wobble) * pt.radius + Math.cos(time * 0.0009 + pt.offset) * 12;
-          // Repel from other points
-          for (let j = 0; j < 3; j++) {
-            if (i === j) continue;
-            const other = tri.points[j];
+          // Repel from all other points
+          allPoints.forEach(other => {
+            if (pt === other) return;
             const dx = pt.x - other.x;
             const dy = pt.y - other.y;
             const dist = Math.sqrt(dx*dx + dy*dy);
             if (dist < minDist) {
-              const force = (minDist - dist) * pointRepelStrength;
+              const force = (minDist - dist) * pointRepelStrength * 0.7;
               pt.x += (dx / dist) * force;
               pt.y += (dy / dist) * force;
             }
-          }
-          // Repel from edges (lines between other two points)
-          const edgeRepelStrength = 0.006;
-          const edgeMinDist = 32;
-          const idxA = (i+1)%3, idxB = (i+2)%3;
-          const a = tri.points[idxA], b = tri.points[idxB];
-          const segDist = pointToSegmentDist(pt.x, pt.y, a.x, a.y, b.x, b.y);
-          if (segDist < edgeMinDist) {
-            // Find closest point on edge
-            const dx = b.x - a.x;
-            const dy = b.y - a.y;
-            let t = ((pt.x-a.x)*dx + (pt.y-a.y)*dy) / (dx*dx + dy*dy);
-            t = Math.max(0, Math.min(1, t));
-            const lx = a.x + t*dx;
-            const ly = a.y + t*dy;
-            const ex = pt.x - lx;
-            const ey = pt.y - ly;
-            const edist = Math.sqrt(ex*ex + ey*ey);
-            if (edist > 0) {
-              const force = (edgeMinDist - segDist) * edgeRepelStrength;
-              pt.x += (ex / edist) * force;
-              pt.y += (ey / edist) * force;
-            }
-          }
+          });
         });
         drawTriangle(tri.points, tri.color);
       });
