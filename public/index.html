@@ -12,6 +12,12 @@
     <!-- TODO: Add form fields for parent/guardian info, child info, etc. -->
     <!-- Example: -->
     <label>First Name: <input type="text" name="firstName" required></label><br>
+    <label>Last Name: <input type="text" name="lastname" required></label><br>
+    <label>Phone Number: <input type="tel" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required>
+    <label>Email Adress: <input type="email" id="email" name="email" required>
+    <label>Secondary Email Adress: <input type="email" id="email" name="email" required>
+    <label># Of Photos Taken: <input type="number" id="quantity" name="quantity" min="1" max="5" required>
+    
     <!-- Add more fields as needed -->
     <button type="submit">Register</button>
   </form>

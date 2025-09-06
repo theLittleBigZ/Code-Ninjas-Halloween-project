@@ -1,5 +1,156 @@
-body { font-family: Arial, sans-serif; margin: 2em; background: #f7f7f7; }
-h1 { color: #7c2e1c; }
-form, #photobooth-controls { background: #fff; padding: 1em; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
-button { background: #7c2e1c; color: #fff; border: none; padding: 0.5em 1em; border-radius: 4px; cursor: pointer; }
-button:disabled { background: #ccc; }
+
+
+:root {
+	--cn-black: #222222;
+	--cn-blue: #00b6e3;
+	--cn-yellow: #4200bc;
+	--cn-white: #ffffff;
+	--cn-gray: #f4f4f4;
+	--cn-shadow: 0 6px 24px #0002;
+}
+
+/* Ninja-themed header bar */
+.ninja-header {
+	background: linear-gradient(90deg, var(--cn-black) 60%, var(--cn-blue) 100%);
+	color: var(--cn-yellow);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 1.2rem 0 1.2rem 0;
+	font-size: 2rem;
+	font-weight: bold;
+	letter-spacing: 3px;
+	box-shadow: var(--cn-shadow);
+	margin-bottom: 2rem;
+}
+
+body {
+	font-family: 'Segoe UI', Arial, sans-serif;
+	margin: 0;
+	background: var(--cn-gray);
+	color: var(--cn-black);
+	min-height: 100vh;
+}
+
+
+
+
+
+h1 {
+	color: var(--cn-blue);
+	text-align: center;
+	margin-top: 0.5rem;
+	letter-spacing: 2px;
+	font-size: 2.2rem;
+	margin-bottom: 1.5rem;
+	text-shadow: 1px 2px 0 var(--cn-yellow), 0 2px 8px #0002;
+}
+
+form, #photobooth-controls {
+	background: linear-gradient(120deg, var(--cn-blue) 80%, var(--cn-yellow) 100%);
+	color: var(--cn-black);
+	padding: 2.2rem 2.5rem 2rem 2.5rem;
+	border-radius: 20px;
+	box-shadow: var(--cn-shadow);
+	max-width: 440px;
+	margin: 2.5rem auto 2rem auto;
+	display: flex;
+	flex-direction: column;
+	gap: 1.3rem;
+	border: 3px solid var(--cn-black);
+	position: relative;
+	z-index: 1;
+}
+
+label {
+	font-weight: 600;
+	margin-bottom: 0.3rem;
+	color: var(--cn-black);
+	display: flex;
+	flex-direction: column;
+	gap: 0.2rem;
+	letter-spacing: 1px;
+}
+
+
+.ninja-label {
+	color: var(--cn-yellow);
+	font-weight: bold;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="number"] {
+	padding: 0.7em 1.1em;
+	border: 2px solid var(--cn-black);
+	border-radius: 8px;
+	font-size: 1.08rem;
+	background: var(--cn-white);
+	color: var(--cn-black);
+	transition: border 0.2s, box-shadow 0.2s;
+	box-shadow: 0 1px 4px #0001;
+}
+input:focus {
+	border-color: var(--cn-blue);
+	outline: none;
+	box-shadow: 0 0 0 2px var(--cn-yellow);
+}
+
+
+button {
+	background: var(--cn-yellow);
+	color: var(--cn-black);
+	border: none;
+	padding: 0.85em 1.7em;
+	border-radius: 8px;
+	font-size: 1.13rem;
+	font-weight: bold;
+	cursor: pointer;
+	margin-top: 0.5rem;
+	box-shadow: 0 2px 8px #0002;
+	transition: background 0.2s, color 0.2s, transform 0.1s;
+	letter-spacing: 1px;
+	border: 2px solid var(--cn-black);
+}
+button:hover:not(:disabled) {
+	background: var(--cn-black);
+	color: var(--cn-yellow);
+	transform: translateY(-2px) scale(1.04);
+	box-shadow: 0 4px 16px #0003;
+}
+button:disabled {
+	background: #bdbdbd;
+	color: #fff;
+	cursor: not-allowed;
+	border: 2px solid #bdbdbd;
+	opacity: 0.7;
+}
+
+/* Card effect for results */
+#registration-result, #photo-result {
+	max-width: 440px;
+	margin: 1.2rem auto;
+	text-align: center;
+	font-size: 1.13rem;
+	color: var(--cn-black);
+	background: var(--cn-white);
+	border-radius: 12px;
+	box-shadow: 0 2px 8px #0001;
+	padding: 1.1rem 1.5rem;
+	border: 1.5px solid var(--cn-blue);
+}
+
+@media (max-width: 600px) {
+	.ninja-header {
+		font-size: 1.2rem;
+		padding: 0.7rem 0;
+	}
+	form, #photobooth-controls {
+		padding: 1rem;
+		max-width: 98vw;
+	}
+	h1 {
+		font-size: 1.3rem;
+	}
+}
