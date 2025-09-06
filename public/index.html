@@ -7,20 +7,171 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="ninja-header">Code Ninjas Registration</div>
   <h1>Photo Booth Registration</h1>
   <form id="registration-form">
-    <!-- TODO: Add form fields for parent/guardian info, child info, etc. -->
-    <!-- Example: -->
-    <label>First Name: <input type="text" name="firstName" required></label><br>
-    <label>Last Name: <input type="text" name="lastname" required></label><br>
-    <label>Phone Number: <input type="tel" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required>
-    <label>Email Adress: <input type="email" id="email" name="email" required>
-    <label>Secondary Email Adress: <input type="email" id="email" name="email" required>
-    <label># Of Photos Taken: <input type="number" id="quantity" name="quantity" min="1" max="5" required>
-    
-    <!-- Add more fields as needed -->
-    <button type="submit">Register</button>
+    <div class="ninja-mask">
+      <img src="assets/images/OIP.webp" alt="" style="width: 150px; height: auto; display: inline-block;">
+        <ellipse cx="30" cy="20" rx="28" ry="16" fill="#222" stroke="#00b6e3" stroke-width="3"/>
+        <ellipse cx="20" cy="20" rx="5" ry="4" fill="#ffe600"/>
+        <ellipse cx="40" cy="20" rx="5" ry="4" fill="#ffe600"/>
+        <ellipse cx="20" cy="20" rx="2" ry="2" fill="#222"/>
+        <ellipse cx="40" cy="20" rx="2" ry="2" fill="#222"/>
+      </svg>
+    </div>
+    <div class="form-group">
+      <label for="firstName" class="ninja-label">First Name</label>
+      <input type="text" id="firstName" name="firstName" required autocomplete="given-name" placeholder="Enter your first name">
+    </div>
+    <div class="form-group">
+      <label for="lastname" class="ninja-label">Last Name</label>
+      <input type="text" id="lastname" name="lastname" required autocomplete="family-name" placeholder="Enter your last name">
+    </div>
+    <div class="form-group">
+      <label for="phone" class="ninja-label">Phone Number</label>
+      <input type="tel" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="123-456-7890" required autocomplete="tel">
+    </div>
+    <div class="form-group">
+      <label for="email" class="ninja-label">Email Address</label>
+      <input type="email" id="email" name="email" required autocomplete="email" placeholder="your@email.com">
+    </div>
+    <div class="form-group">
+      <label for="secondaryEmail" class="ninja-label">Secondary Email Address</label>
+      <input type="email" id="secondaryEmail" name="secondaryEmail" autocomplete="email" placeholder="optional">
+    </div>
+    <div class="form-group">
+      <label for="quantity" class="ninja-label"># Of Photos Taken</label>
+      <input type="number" id="quantity" name="quantity" min="1" max="5" required placeholder="1-5">
+    </div>
+    <div class="form-group">
+      <label for="quantity" class="ninja-label">Photo Consent </label>
+      <input type="checkbox" id="subscribe" name="subscribe" value="yes" required><br>
+    </div>
+    <button type="submit" class="ninja-btn">Register</button>
   </form>
+  <style>
+    body {
+      background: linear-gradient(135deg, #00b6e3 0%, #000000 100%);
+      min-height: 100vh;
+    }
+    #registration-form {
+      background: linear-gradient(120deg, #fff 60%, #00b6e3 100%);
+      border-radius: 28px;
+      box-shadow: 0 8px 32px #00000055, 0 1.5px 0 #595959 inset;
+      max-width: 480px;
+      margin: 3rem auto 2rem auto;
+      padding: 2.5rem 2.5rem 2rem 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.7rem;
+      border: 3px solid #222222;
+      position: relative;
+      z-index: 1;
+      animation: ninjaFadeIn 1.2s cubic-bezier(.77,0,.18,1) both;
+    }
+    @keyframes ninjaFadeIn {
+      from { opacity: 0; transform: translateY(40px) scale(0.98); }
+      to { opacity: 1; transform: none; }
+    }
+    .ninja-mask {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.2rem;
+      animation: ninjaFadeIn 1.5s 0.2s cubic-bezier(.77,0,.18,1) both;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .ninja-label {
+      color: #00b6e3;
+      font-weight: bold;
+      letter-spacing: 1px;
+      font-size: 1.09rem;
+      margin-bottom: 0.1rem;
+      text-shadow: 0 1px 2px #ffe60099;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="number"] {
+      padding: 0.8em 1.2em;
+      border: 2.5px solid #222222;
+      border-radius: 12px;
+      font-size: 1.09rem;
+      background: linear-gradient(90deg, #fff 80%, #ffe60022 100%);
+      color: #222222;
+      transition: border 0.2s, box-shadow 0.2s, background 0.3s;
+      box-shadow: 0 1px 8px #00b6e322;
+    }
+    input:focus {
+      border-color: #00b6e3;
+      outline: none;
+      box-shadow: 0 0 0 3px #ffe60099;
+      background: linear-gradient(90deg, #000000 0%, #00b6e3 100%);
+      color: #222;
+    }
+    .ninja-btn {
+      background: linear-gradient(90deg, #16be00 60%, #1bb600 100%);
+      color: #222222;
+      border: none;
+      padding: 1em 2em;
+      border-radius: 14px;
+      font-size: 1.18rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      box-shadow: 0 2px 12px #00b6e355;
+      transition: background 0.2s, color 0.2s, transform 0.1s;
+      letter-spacing: 1px;
+      border: 2.5px solid #222222;
+      position: relative;
+      overflow: hidden;
+    }
+    .ninja-btn::after {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; right: 0; bottom: 0;
+      background: linear-gradient(120deg, #27c500 0%, #1eb300 100%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: -1;
+    }
+    .ninja-btn:hover:not(:disabled) {
+      background: linear-gradient(90deg, #25c900 60%, #00b403 100%);
+      color: #000000;
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 6px 24px #00b6e355;
+    }
+    .ninja-btn:active {
+      color: #222;
+    }
+    .ninja-btn:disabled {
+      background: #bdbdbd;
+      color: #fff;
+      cursor: not-allowed;
+      border: 2.5px solid #bdbdbd;
+      opacity: 0.7;
+    }
+    @media (max-width: 600px) {
+      #registration-form {
+        padding: 1rem;
+        max-width: 98vw;
+      }
+      .ninja-mask svg {
+        width: 40px;
+        height: 28px;
+      }
+    }
+    input[type="checkbox"] {
+      width: 24px;
+      height: 24px;
+      accent-color: #00b6e3;
+      cursor: pointer;
+      margin-right: 8px;
+    }
+  </style>
   <div id="registration-result"></div>
   <script src="script.js"></script>
 </body>
