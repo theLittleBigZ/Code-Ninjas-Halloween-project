@@ -1,5 +1,59 @@
 // Phone number formatting and validation
 document.addEventListener('DOMContentLoaded', function() {
+  // Floating, shifting triangles foreground
+  const triCanvas = document.getElementById('tri-canvas');
+  if (triCanvas) {
+    function resizeTriCanvas() {
+      triCanvas.width = window.innerWidth;
+      triCanvas.height = window.innerHeight;
+    }
+    resizeTriCanvas();
+    window.addEventListener('resize', resizeTriCanvas);
+    const ctx = triCanvas.getContext('2d');
+    ctx.globalCompositeOperation = 'lighter'; // additive blending
+    const TRI_COUNT = 3;
+    // Each triangle has 3 points, each with its own position and velocity
+    function randomPoint() {
+      return {
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        vx: (Math.random() - 0.5) * 0.7,
+        vy: (Math.random() - 0.5) * 0.7
+      };
+    }
+    const triangles = Array.from({length: TRI_COUNT}).map(() => ({
+      points: [randomPoint(), randomPoint(), randomPoint()],
+      color: `hsla(${Math.floor(Math.random()*360)}, 60%, 70%, 0.12)` // more transparent
+    }));
+    function drawTriangle(pts, color) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x, pts[0].y);
+      ctx.lineTo(pts[1].x, pts[1].y);
+      ctx.lineTo(pts[2].x, pts[2].y);
+      ctx.closePath();
+      ctx.fillStyle = color;
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 32;
+      ctx.fill();
+      ctx.restore();
+    }
+    function animateTriangles() {
+      ctx.clearRect(0, 0, triCanvas.width, triCanvas.height);
+      triangles.forEach(tri => {
+        tri.points.forEach(pt => {
+          pt.x += pt.vx;
+          pt.y += pt.vy;
+          // bounce off edges
+          if (pt.x < 0 || pt.x > window.innerWidth) pt.vx *= -1;
+          if (pt.y < 0 || pt.y > window.innerHeight) pt.vy *= -1;
+        });
+        drawTriangle(tri.points, tri.color);
+      });
+      requestAnimationFrame(animateTriangles);
+    }
+    animateTriangles();
+  }
   // Animate background, form, and inputs from #fff to #000 over 30 seconds
   function lerpColor(a, b, t) {
     return a + (b - a) * t;
@@ -58,11 +112,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const hexBg = rgbToHex(rgbBg[0], rgbBg[1], rgbBg[2]);
     document.body.style.backgroundColor = hexBg;
 
-    // Form container
-    const rgbForm = hslToRgb(hue, sat, lightForm);
-    const hexForm = rgbToHex(rgbForm[0], rgbForm[1], rgbForm[2]);
-    const form = document.querySelector('.form-container');
-    if (form) form.style.backgroundColor = hexForm;
+  // Form container
+  const rgbForm = hslToRgb(hue, sat, lightForm);
+  const hexForm = rgbToHex(rgbForm[0], rgbForm[1], rgbForm[2]);
+  const form = document.querySelector('.form-container');
+  if (form) form.style.backgroundColor = hexForm;
+  // Registration form itself
+  const regForm = document.getElementById('registration-form');
+  if (regForm) regForm.style.backgroundColor = hexForm;
 
     // Inputs
     const rgbInput = hslToRgb(hue, sat, lightInput);
