@@ -12,92 +12,94 @@ document.addEventListener('DOMContentLoaded', function() {
     const ctx = triCanvas.getContext('2d');
     ctx.globalCompositeOperation = 'lighter'; // additive blending
     const TRI_COUNT = 12;
-    // Each triangle has 3 points, each with its own position and velocity
-    // Each point will float around a center using oscillation and some randomness
-    function randomPoint(center) {
+    // All points exist independently and interact
+    function randomPoint() {
       return {
-        cx: center.x,
-        cy: center.y,
-        radius: 40 + Math.random() * 80,
-        angle: Math.random() * Math.PI * 2,
-        speed: 0.005 + Math.random() * 0.004,
-        offset: Math.random() * 1000
-      };
-    }
-    const triangles = Array.from({length: TRI_COUNT}).map(() => {
-      const center = {
         x: Math.random() * window.innerWidth,
         y: Math.random() * window.innerHeight,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5
+        vx: 0,
+        vy: 0,
+        mass: 200 // random mass between 20 and 50
       };
-      return {
-        center,
-        points: [randomPoint(center), randomPoint(center), randomPoint(center)],
-        color: `hsla(${Math.floor(Math.random()*360)}, 60%, 70%, 0.12)`
-      };
-    });
+    }
+    // Create all points
+    const allPoints = Array.from({length: TRI_COUNT * 3}).map(() => randomPoint());
+    // Triangles reference 3 points each
+    const triangles = Array.from({length: TRI_COUNT}).map((_, i) => ({
+      points: [allPoints[i*3], allPoints[i*3+1], allPoints[i*3+2]],
+      color: `hsla(${Math.floor(Math.random()*360)}, 60%, 70%, 0.12)`
+    }));
     function drawTriangle(pts, color) {
-      ctx.save();
-      ctx.beginPath();
-      ctx.moveTo(pts[0].x, pts[0].y);
-      ctx.lineTo(pts[1].x, pts[1].y);
-      ctx.lineTo(pts[2].x, pts[2].y);
-      ctx.closePath();
-      ctx.fillStyle = color;
-      ctx.shadowColor = color;
-      ctx.shadowBlur = 32;
-      ctx.fill();
-      ctx.restore();
+  // No longer used
     }
     function animateTriangles() {
+  const collisionDist = 36; // points are drawn with radius 18
+  const collisionRepelStrength = 2.5;
       ctx.clearRect(0, 0, triCanvas.width, triCanvas.height);
       const time = Date.now();
-      const edgePushStrength = 0.012;
-      const edgePushDistance = 120;
-      const pointRepelStrength = 0.008;
-      const minDist = 40;
-      // Gather all points
-      const allPoints = triangles.flatMap(tri => tri.points);
-      triangles.forEach(tri => {
-        // Move the center
-        tri.center.x += tri.center.vx;
-        tri.center.y += tri.center.vy;
-        // Push away from left/right edges
-        if (tri.center.x < edgePushDistance) {
-          tri.center.vx += (edgePushDistance - tri.center.x) * edgePushStrength;
-        } else if (tri.center.x > window.innerWidth - edgePushDistance) {
-          tri.center.vx -= (tri.center.x - (window.innerWidth - edgePushDistance)) * edgePushStrength;
+      const edgePushStrength = 0.0012;
+      const edgePushDistance = 180;
+      const pointRepelStrength = 0.12;
+      const minDist = 80;
+      // Animate all points: only gravity and edge push affect velocity
+      allPoints.forEach((pt, i) => {
+        pt.x += pt.vx;
+        pt.y += pt.vy;
+        // Edge push
+        if (pt.x < edgePushDistance) {
+          pt.vx += (edgePushDistance - pt.x) * edgePushStrength;
+        } else if (pt.x > window.innerWidth - edgePushDistance) {
+          pt.vx -= (pt.x - (window.innerWidth - edgePushDistance)) * edgePushStrength;
         }
-        // Push away from top/bottom edges
-        if (tri.center.y < edgePushDistance) {
-          tri.center.vy += (edgePushDistance - tri.center.y) * edgePushStrength;
-        } else if (tri.center.y > window.innerHeight - edgePushDistance) {
-          tri.center.vy -= (tri.center.y - (window.innerHeight - edgePushDistance)) * edgePushStrength;
+        if (pt.y < edgePushDistance) {
+          pt.vy += (edgePushDistance - pt.y) * edgePushStrength;
+        } else if (pt.y > window.innerHeight - edgePushDistance) {
+          pt.vy -= (pt.y - (window.innerHeight - edgePushDistance)) * edgePushStrength;
         }
-        // Limit velocity
-        tri.center.vx = Math.max(-1.2, Math.min(1.2, tri.center.vx));
-        tri.center.vy = Math.max(-1.2, Math.min(1.2, tri.center.vy));
-        // Animate points and repel them from all other points
-        tri.points.forEach((pt, i) => {
-          pt.angle += pt.speed;
-          const wobble = Math.sin(time * 0.001 + pt.offset) * 0.5 + Math.cos(time * 0.0012 + pt.offset) * 0.5;
-          pt.x = tri.center.x + Math.cos(pt.angle + wobble) * pt.radius + Math.sin(time * 0.0007 + pt.offset) * 12;
-          pt.y = tri.center.y + Math.sin(pt.angle + wobble) * pt.radius + Math.cos(time * 0.0009 + pt.offset) * 12;
-          // Repel from all other points
-          allPoints.forEach(other => {
-            if (pt === other) return;
-            const dx = pt.x - other.x;
-            const dy = pt.y - other.y;
-            const dist = Math.sqrt(dx*dx + dy*dy);
-            if (dist < minDist) {
-              const force = (minDist - dist) * pointRepelStrength * 0.7;
-              pt.x += (dx / dist) * force;
-              pt.y += (dy / dist) * force;
-            }
-          });
-        });
-        drawTriangle(tri.points, tri.color);
+        // No velocity clamping (no friction)
+      });
+      // Newton's law of universal gravitation (mutual attraction)
+      const G = 0.12; // extremely strong gravitational constant for canvas scale
+      for (let i = 0; i < allPoints.length; i++) {
+        for (let j = 0; j < allPoints.length; j++) {
+          if (i === j) continue;
+          const ptA = allPoints[i];
+          const ptB = allPoints[j];
+          const dx = ptB.x - ptA.x;
+          const dy = ptB.y - ptA.y;
+          const distSq = dx*dx + dy*dy;
+          const dist = Math.sqrt(distSq);
+          if (dist > 1) {
+            // F = G * m1 * m2 / r^2
+            let force = G * ptA.mass * ptB.mass / distSq;
+            force = Math.min(force, 1.5); // clamp for stability
+            // Directional force
+            const fx = (dx / dist) * force;
+            const fy = (dy / dist) * force;
+            ptA.vx += fx / ptA.mass;
+            ptA.vy += fy / ptA.mass;
+                // Strong repulsion if points overlap
+                if (dist < collisionDist) {
+                  let repelForce = collisionRepelStrength * (collisionDist - dist) / collisionDist;
+                  const rfx = -(dx / dist) * repelForce;
+                  const rfy = -(dy / dist) * repelForce;
+                  ptA.vx += rfx;
+                  ptA.vy += rfy;
+                }
+          }
+        }
+      }
+      // Draw points as glowing circles
+      allPoints.forEach(pt => {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, 18, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.fillStyle = `hsla(${Math.floor((pt.offset*100)%360)}, 60%, 70%, 0.18)`;
+        ctx.shadowColor = ctx.fillStyle;
+        ctx.shadowBlur = 32;
+        ctx.fill();
+        ctx.restore();
       });
       requestAnimationFrame(animateTriangles);
     }
