@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('resize', resizeTriCanvas);
     const ctx = triCanvas.getContext('2d');
     ctx.globalCompositeOperation = 'lighter'; // additive blending
-    const TRI_COUNT = 3;
+    const TRI_COUNT = 1;
     // Each triangle has 3 points, each with its own position and velocity
     function randomPoint() {
       return {
