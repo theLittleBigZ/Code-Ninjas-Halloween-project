@@ -9,16 +9,61 @@
 <body>
   <h1>Code Ninjas Stouffville Photo Booth Registration Form</h1>
   <form id="registration-form">
-    <!-- TODO: Add form fields for parent/guardian info, child info, etc. -->
-    <!-- Example: -->
-    <label>First Name: <input type="text" name="firstName" required></label><br>
-    <label>Last Name: <input type="text" name="lastName" required></label><br>
-    <label>Phone Number: <input type="tel" name="phoneNumber" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"></label><br>
-    <label>Email: <input type ="email" name="email" required></label><br>
-    <label>Secondary Email: <input type ="email" name="email"></label><br>
-    <label>Amount of People: <input type ="number" name="amountOfPeople" required></label><br>
-    <!-- Add more fields as needed -->
-    <button type="submit">Register</button>
+  <div class="form-box">
+  <div class="form-grid">
+        <div class="section-box" style="grid-column: 1 / span 2;">
+          <span class="form-subtitle">Information</span>
+          <div class="section-fields">
+            <div>
+              <label>First Name:<br><input type="text" name="firstName" required></label>
+            </div>
+            <div>
+              <label>Last Name:<br><input type="text" name="lastName" required></label>
+            </div>
+            <div>
+              <label>Phone Number:<br><input type="tel" name="phoneNumber" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"></label>
+            </div>
+            <div>
+              <label>Email:<br><input type ="email" name="email" required></label>
+            </div>
+            <div style="grid-column: 1 / span 2; display: flex; justify-content: center;">
+              <label>Secondary Email:<br><input type ="email" name="email"></label>
+            </div>
+          </div>
+        </div>
+        <div class="section-box" style="grid-column: 1 / span 2;">
+          <span class="form-subtitle">Group</span>
+          <div class="section-fields">
+            <div style="grid-column: 1 / span 2; display: flex; justify-content: center;">
+              <label>Amount of People:<br><input type ="number" name="amountOfPeople" required></label>
+            </div>
+        </div>
+      </div>
+      <div class="section-box" style="grid-column: 1 / span 2;">
+        <span class="form-subtitle">Consent</span>
+        <div class="section-fields" style="grid-template-columns: 1fr;">
+          <div style="display: flex; justify-content: center; align-items: center;">
+            <label style="font-weight: 500; font-size: 1em; display: flex; flex-direction: column; align-items: flex-start; width: 100%;">
+              <span>
+                I hereby grant Code Ninjas and its representatives permission to photograph and/or record video of myself and my child(ren) during this event. I understand that these images and recordings may be used for promotional, marketing, and educational purposes in print and digital media, including social media. I acknowledge that no compensation will be provided and that all rights to the images and recordings belong to Code Ninjas. I have read and understand this consent and release.
+              </span>
+              <select name="consent" required style="margin-top: 0.7em; width: 60%; padding: 0.7em; border-radius: 6px; border: 1px solid #0074d9; background: #fff; color: #003366; font-size: 1em; display: block; margin-left: auto; margin-right: auto;">
+                <option value="">Please select</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+              <span style="font-size: 0.98em; margin-top: 1em; display: block; text-align: center; width: 100%;">Do you agree to the above consent and release?</span>
+            </label>
+          </div>
+        </div>
+          </div>
+        </div>
+      </div>
+      <!-- Add more fields as needed -->
+      <div style="width: 100%; display: flex; justify-content: center; margin-top: 1.5em;">
+        <button type="submit">Register</button>
+      </div>
+    </div>
   </form>
   <div id="registration-result"></div>
   <script src="script.js"></script>
