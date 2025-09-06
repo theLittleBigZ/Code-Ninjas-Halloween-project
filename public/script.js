@@ -1,5 +1,99 @@
 // Phone number formatting and validation
 document.addEventListener('DOMContentLoaded', function() {
+  // Animate background, form, and inputs from #fff to #000 over 30 seconds
+  function lerpColor(a, b, t) {
+    return a + (b - a) * t;
+  }
+
+  // Convert HSL to RGB
+  function hslToRgb(h, s, l) {
+    h = h % 360;
+    s = Math.max(0, Math.min(1, s));
+    l = Math.max(0, Math.min(1, l));
+    let c = (1 - Math.abs(2 * l - 1)) * s;
+    let x = c * (1 - Math.abs((h / 60) % 2 - 1));
+    let m = l - c / 2;
+    let r = 0, g = 0, b = 0;
+    if (h < 60) { r = c; g = x; b = 0; }
+    else if (h < 120) { r = x; g = c; b = 0; }
+    else if (h < 180) { r = 0; g = c; b = x; }
+    else if (h < 240) { r = 0; g = x; b = c; }
+    else if (h < 300) { r = x; g = 0; b = c; }
+    else { r = c; g = 0; b = x; }
+    return [
+      Math.round((r + m) * 255),
+      Math.round((g + m) * 255),
+      Math.round((b + m) * 255)
+    ];
+  }
+  function hexToRgb(hex) {
+    hex = hex.replace('#', '');
+    if (hex.length === 3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+    var bigint = parseInt(hex, 16);
+    var r = (bigint >> 16) & 255;
+    var g = (bigint >> 8) & 255;
+    var b = bigint & 255;
+    return [r, g, b];
+  }
+  function rgbToHex(r, g, b) {
+    return '#' + [r,g,b].map(x => x.toString(16).padStart(2,'0')).join('');
+  }
+  const startColor = hexToRgb('#ffffff');
+  const duration = 30000; // 30 seconds for full rainbow cycle
+  let startTime = Date.now();
+  function animateColors() {
+    const now = Date.now();
+    let t = ((now - startTime) % duration) / duration;
+    // Desaturated rainbow: low saturation, full hue cycle
+    const hue = t * 360;
+    const sat = 0.25; // desaturated
+    const lightBg = 0.95; // light for background
+    const lightForm = 0.90; // slightly darker for form
+    const lightInput = 0.85; // even darker for inputs
+    const lightText = 0.15; // dark for text
+    const lightTextInv = 0.95; // light for text
+
+    // Background
+    const rgbBg = hslToRgb(hue, sat, lightBg);
+    const hexBg = rgbToHex(rgbBg[0], rgbBg[1], rgbBg[2]);
+    document.body.style.backgroundColor = hexBg;
+
+    // Form container
+    const rgbForm = hslToRgb(hue, sat, lightForm);
+    const hexForm = rgbToHex(rgbForm[0], rgbForm[1], rgbForm[2]);
+    const form = document.querySelector('.form-container');
+    if (form) form.style.backgroundColor = hexForm;
+
+    // Inputs
+    const rgbInput = hslToRgb(hue, sat, lightInput);
+    const hexInput = rgbToHex(rgbInput[0], rgbInput[1], rgbInput[2]);
+    const inputs = document.querySelectorAll('.form-group input');
+    inputs.forEach(input => {
+      input.style.backgroundColor = hexInput;
+      input.style.color = rgbToHex(...hslToRgb(hue, sat, lightTextInv));
+      input.style.borderColor = rgbToHex(...hslToRgb(hue, sat, lightText));
+    });
+
+    // Title, labels, result, error text
+    const hexText = rgbToHex(...hslToRgb(hue, sat, lightText));
+    const hexTextInv = rgbToHex(...hslToRgb(hue, sat, lightTextInv));
+    if (form) form.style.color = hexText;
+    const labels = document.querySelectorAll('.form-group label');
+    labels.forEach(label => {
+      label.style.color = hexText;
+    });
+    const title = document.querySelector('.form-container h1');
+    if (title) title.style.color = hexText;
+    const result = document.getElementById('registration-result');
+    if (result) result.style.color = hexText;
+    const errors = document.querySelectorAll('.input-error');
+    errors.forEach(error => {
+      error.style.color = hexText;
+    });
+
+    requestAnimationFrame(animateColors);
+  }
+  animateColors();
   const pictureInput = document.getElementById('pictureAmount');
   const pictureError = document.getElementById('picture-error');
   const emailInput = document.getElementById('emailAddress');
