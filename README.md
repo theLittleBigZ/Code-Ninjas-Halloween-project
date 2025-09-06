@@ -15,8 +15,11 @@ For the user registration the following is needed
 - Child(ern) ages
 this infomation will be used to make a QR code and must be saved for use later
 
-### PhotoBooth 
-Will be running on a tablet and will take a photo of the user and apply edits to them and email it out the the user
+
+### Registration Entries
+
+| First Name | Last Name | Email | # Of Photos |
+|------------|-----------|-------|-------------|
 
 ### Student Project Checklist
 

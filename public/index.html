@@ -7,15 +7,35 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Photo Booth Registration</h1>
+  <h1>Photo Booth Registration</h1><p style="background-image: url('Code-Ninjas-Logo-300x165.jpg');"></p>
+  
   <form id="registration-form">
     <!-- TODO: Add form fields for parent/guardian info, child info, etc. -->
     <!-- Example: -->
-    <label>First Name: <input type="text" name="firstName" required></label><br>
+    <label>First Name: <input type="text" name="firstname" required></label><br>
+    <h6>l</h6>
+    <label>Last Name: <input type="text" name="lastname" required></label><br>
+    <h6>l</h6>
+    <label>Email: <input type="email" name="email" required></label><br>
+    <h6>l</h6>
+    <label># Of Photos: (Max 3) <input type="number" name="numofphotos" min="1" max="3" required></label><br>
+    <h6>l</h6>
+    <label>Consent: <input type="checkbox" name="consent" required></label><br>
     <!-- Add more fields as needed -->
-    <button type="submit">Register</button>
-  </form>
-  <div id="registration-result"></div>
+     <h6>l</h6>
+        <div class="actions full-width">
+          <button type="submit">Register &amp; Save to CSV</button>
+          <button type="button" class="secondary" id="clear-btn">Clear</button>
+        </div>
+      </form>
+
+      <div id="registration-result" class="small" aria-live="polite"></div>
+      <div id="qr-container" style="margin-top:12px; display:none; text-align:center;">
+        <div class="small">Scan this QR at the photobooth:</div>
+        <img id="qr-image" src="" alt="QR Code" style="max-width:260px; width:100%; height:auto; border:8px solid #939393; margin-top:8px;" />
+      </div>
+    </div>
+  </div>
   <script src="script.js"></script>
 </body>
 </html>

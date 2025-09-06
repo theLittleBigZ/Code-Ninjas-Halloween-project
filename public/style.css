@@ -1,5 +1,7 @@
-body { font-family: Arial, sans-serif; margin: 2em; background: #f7f7f7; }
-h1 { color: #7c2e1c; }
-form, #photobooth-controls { background: #fff; padding: 1em; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
-button { background: #7c2e1c; color: #fff; border: none; padding: 0.5em 1em; border-radius: 4px; cursor: pointer; }
+body { font-family: Arial, sans-serif; margin: 2em; background: #fff; background-image: url('https://i.pinimg.com/originals/54/83/f6/5483f67da3cd8ef217c733a14bcd7c6a.jpg'); background-size: cover; background-repeat: no-repeat; background-position: center; }
+h1 { color: #ffffff; }
+h2 { color: #ffffff; }
+h6 { color: #dde2f1; }
+form, #photobooth-controls { background: #dde2f1; padding: 1em; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
+button { background: #8395cd; color: #fff; border: none; padding: 0.5em 1em; border-radius: 4px; cursor: pointer; }
 button:disabled { background: #ccc; }
