@@ -47,11 +47,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Desaturated rainbow: low saturation, full hue cycle
     const hue = t * 360;
     const sat = 0.25; // desaturated
-    const lightBg = 0.95; // light for background
-    const lightForm = 0.90; // slightly darker for form
-    const lightInput = 0.85; // even darker for inputs
-    const lightText = 0.15; // dark for text
-    const lightTextInv = 0.95; // light for text
+    const lightBg = 0.15; // light for background
+    const lightForm = 0.2; // slightly darker for form
+    const lightInput = 0.25; // even darker for inputs
+    const lightText = 0.75; // dark for text
+    const lightTextInv = 0.15; // light for text
 
     // Background
     const rgbBg = hslToRgb(hue, sat, lightBg);
