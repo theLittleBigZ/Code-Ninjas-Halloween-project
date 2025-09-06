@@ -1,149 +1,74 @@
-:root {
-	--navy: #425b76;   /* deep */
-	--blue: #187abf;   /* accent */
-	--light: #f8f9fa;  /* background */
-	--muted: #6b7c8a;
-	--card-shadow: 0 6px 20px rgba(66,91,118,0.12);
-}
-
-/* Page layout */
-html, body {
-	height: 100%;
+@font-face {
+  font-family: 'monaco';
+  src: url('https://github.com/todylu/monaco.ttf/blob/master/monaco.ttf?raw=true') format('truetype');
+  font-weight: normal;
+  font-style: normal;
 }
 body {
-	font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-	margin: 0;
-	padding: 2rem;
-	background: linear-gradient(180deg, var(--light) 0%, #ffffff 60%);
-	color: var(--navy);
-	-webkit-font-smoothing: antialiased;
+    font-family: monaco, Consolas, "Lucida Console", monospace;
+  margin: 0%;
+  background-image: url("assets/images/abstract-modern-cool-geometric-pattern-background-vector.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  text-shadow: 2px 4px 4px rgba(255, 255, 255, 0.823);
 }
-
-.page {
-	max-width: 920px;
-	margin: 0 auto;
-}
-
 h1 {
-	color: var(--navy);
-	font-size: 1.8rem;
-	margin-bottom: 0.5rem;
+  font-family: monaco, Consolas, "Lucida Console", monospace;
+  color: #ffffff;
+  text-shadow: 2px 4px 4px rgba(99, 203, 255, 0.6);
+  animation: slide-in 1s ease;
+  text-align: center;
+  font-size: 80px;
 }
-
-p.lead {
-	color: var(--muted);
-	margin-top: 0;
-	margin-bottom: 1.25rem;
-}
-
-/* Card / form container */
-.card {
-	background: #fff;
-	border-radius: 12px;
-	padding: 1.5rem;
-	box-shadow: var(--card-shadow);
-	display: block;
-}
-
 form {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 1rem;
-	align-items: start;
+  animation: slide-in 1s ease;
 }
 
-label {
-	display: block;
-	font-size: 0.9rem;
-	color: var(--navy);
-	margin-bottom: 0.35rem;
+
+@keyframes slide-in {
+  from {
+    transform: translateY(-40px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
-input[type="text"],
-input[type="email"],
-input[type="tel"],
-input[type="number"],
-select,
-textarea {
-	width: 100%;
-	padding: 0.6rem 0.75rem;
-	border: 1px solid #e6eef6;
-	border-radius: 8px;
-	background: #fff;
-	box-sizing: border-box;
-	font-size: 0.95rem;
-	color: #24343f;
-	transition: border-color 150ms ease, box-shadow 150ms ease;
+#photobooth-controls {
+  background: hsl(200, 100%, 50%);
+  padding: 1em;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px #0001;
 }
-
-input:focus, select:focus, textarea:focus {
-	outline: none;
-	border-color: var(--blue);
-	box-shadow: 0 6px 18px rgba(24,122,191,0.08);
+form,
+#photobooth-controls,
+input {
+  border-radius: 8px;
+  background: #fff;
+  box-sizing: border-box;
+  padding: 0.5em;
+  margin-bottom: 1em;
+font-family: monaco, Consolas, "Lucida Console", monospace;
 }
-
-.full-width {
-	grid-column: 1 / -1;
+form,
+#photobooth-controls,
+div {
+  margin-bottom: 1em;
+  background: linear-gradient(to right, #ebfdff, #8da2e7, #7ab1d7, #5845ff);
+  font-family: monaco, Consolas, "Lucida Console", monospace;
 }
-
-.hint {
-	font-size: 0.8rem;
-	color: var(--muted);
-	margin-top: 0.25rem;
-}
-
-.actions {
-	display: flex;
-	gap: 0.75rem;
-	align-items: center;
-	justify-content: flex-end;
-	grid-column: 1 / -1;
-	margin-top: 0.5rem;
-}
-
 button {
-	background: var(--blue);
-	color: #fff;
-	border: none;
-	padding: 0.65rem 1rem;
-	border-radius: 8px;
-	cursor: pointer;
-	font-weight: 600;
-	box-shadow: 0 6px 18px rgba(24,122,191,0.12);
-	transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
+  background: #dddddd;
+  border: none;
+  padding: 0.5em 1em;
+  border-radius: 4px;
+  cursor: pointer;
 }
-
-button:hover { transform: translateY(-2px); }
-
-button.secondary {
-	background: transparent;
-	color: var(--navy);
-	border: 1px solid #e1ecf5;
-	box-shadow: none;
+button:disabled {
+  background: #ccc;
 }
-
-button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-
-/* Phone input small tweak */
-input[type="tel"] { letter-spacing: 0.08em; }
-
-/* Responsive */
-@media (max-width: 720px) {
-	body { padding: 1rem; }
-	form { grid-template-columns: 1fr; }
-	.actions { justify-content: stretch; }
+.marged {
+  margin: 2em;
 }
-
-/* Utility */
-.small { font-size: 0.85rem; color: var(--muted); }
-
-/* Specific to registration page to make it look nice with minimal HTML changes */
-.registration-wrapper { display: grid; gap: 1rem; }
-.registration-top { display:flex; justify-content:space-between; align-items:center; gap:1rem; }
-.brand { display:flex; gap:0.75rem; align-items:center; }
-.logo { width:42px; height:42px; border-radius:8px; background: linear-gradient(135deg,var(--navy),var(--blue)); display:inline-block; }
-.title { font-size:1rem; color:var(--navy); }
-
-/* make form inputs and labels breathe when stacked */
-form > div { display:flex; flex-direction:column; }
-

@@ -3,24 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Photo Booth Registration</title>
+  <title>CNS-Photo Booth Registration</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div style="text-align: center; background: linear-gradient(to right, #0d0e65, #233c8e, #4e68c4, #7e92ea); width: 100%; margin: 0%; left: 0%;">
+    <img src="assets/images/Code_Ninjas_Powell_Logo-1-removebg-preview (1).png" alt="Code Ninjas Stouffville Logo" style="max-width: 200px; height: auto;">
+  </div>
   <h1>Photo Booth Registration</h1>
-  <form id="registration-form">
+  <form class="marged" id="registration-form">
     <!-- TODO: Add form fields for parent/guardian info, child info, etc. -->
     <!-- Example: -->
-    <label>First Name: <input type="text" name="firstName" required></label><br>
-    <label>First Name: <input type="text" name="lastName" required></label><br>
+    <div class="marged"><label>First Name: <input type="text" name="firstName" required></label><br></div>
+    <div class="marged"><label>Last Name: <input type="text" name="lastName" required></label><br></div>
+    <div class="marged"><label>Email: <input type="email" name="email" required></label><br></div>
+    <div class="marged"><label>Secondary Email: <input type="email" name="secondaryEmail"></label><br></div>
     <!-- Add more fields as needed -->
 
-    <label for="phone">Enter your phone number:<input type="tel" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"></label>
+    <div class="marged"><label for="phone">Enter your phone number:<input type="tel" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"></label></div>
   
     <br>
     <button type="submit">Register</button>
   </form>
-  <div id="registration-result"></div>
+  <div class="marged" id="registration-result"></div>
   <script src="script.js"></script>
 </body>
 </html>
