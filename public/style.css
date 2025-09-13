@@ -14,9 +14,13 @@ body {
 	font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
 	margin: 0;
 	padding: 2rem;
-	background: linear-gradient(180deg, var(--light) 0%, #ffffff 60%);
+	background: #0a174e; /* dark blue */
 	color: var(--navy);
 	-webkit-font-smoothing: antialiased;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 100vh;
 }
 
 .page {
@@ -25,9 +29,10 @@ body {
 }
 
 h1 {
-	color: var(--navy);
+	color: #fff;
 	font-size: 1.8rem;
-	margin-bottom: 0.5rem;
+	margin-bottom: 2rem;
+	text-align: center;
 }
 
 p.lead {
@@ -43,13 +48,21 @@ p.lead {
 	padding: 1.5rem;
 	box-shadow: var(--card-shadow);
 	display: block;
+	text-align: center;
 }
 
-form {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 1rem;
-	align-items: start;
+.card, 
+.card * {
+  text-align: center;
+}
+
+.card h1 {
+  color: var(--navy);
+  margin-bottom: 2rem;
+}
+
+.card form {
+  justify-items: center;
 }
 
 label {
@@ -57,11 +70,9 @@ label {
 	font-size: 0.9rem;
 	color: var(--navy);
 	margin-bottom: 0.35rem;
+	width: 100%;
 }
 
-input[type="text"],
-input[type="email"],
-input[type="tel"],
 input[type="number"],
 select,
 textarea {
@@ -74,6 +85,15 @@ textarea {
 	font-size: 0.95rem;
 	color: #24343f;
 	transition: border-color 150ms ease, box-shadow 150ms ease;
+	text-align: center;
+}
+
+input[type="text"] {
+  border-radius: 8px;
+}
+
+input[type="email"] {
+  border-radius: 8px;
 }
 
 input:focus, select:focus, textarea:focus {
@@ -111,6 +131,8 @@ button {
 	font-weight: 600;
 	box-shadow: 0 6px 18px rgba(24,122,191,0.12);
 	transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
+	width: 50%;
+	margin-top: 1rem;
 }
 
 button:hover { transform: translateY(-2px); }
@@ -125,7 +147,10 @@ button.secondary {
 button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
 /* Phone input small tweak */
-input[type="tel"] { letter-spacing: 0.08em; }
+input[type="tel"] {
+  border-radius: 8px;
+  letter-spacing: 0.08em;
+}
 
 /* Responsive */
 @media (max-width: 720px) {
@@ -137,6 +162,14 @@ input[type="tel"] { letter-spacing: 0.08em; }
 /* Utility */
 .small { font-size: 0.85rem; color: var(--muted); }
 
+.small-btn {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.6rem;
+  width: 50px;
+  min-width: unset;
+  max-width: unset;
+}
+
 /* Specific to registration page to make it look nice with minimal HTML changes */
 .registration-wrapper { display: grid; gap: 1rem; }
 .registration-top { display:flex; justify-content:space-between; align-items:center; gap:1rem; }
@@ -147,3 +180,112 @@ input[type="tel"] { letter-spacing: 0.08em; }
 /* make form inputs and labels breathe when stacked */
 form > div { display:flex; flex-direction:column; }
 
+#registration-form {
+  background: #fff;
+  padding: 2rem 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+#registration-form button {
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  padding: 0.65rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 6px 18px rgba(24,122,191,0.12);
+  transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
+  width: 100%;
+  margin-top: 1rem;
+  text-align: center;
+  display: block;
+}
+
+#photos {
+  border: 2px solid var(--navy);
+}
+
+#form-page-1 label {
+  margin-bottom: 0.15rem;
+}
+
+#form-page-1 input[type="text"],
+#form-page-1 input[type="number"] {
+  width: 250px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  margin-bottom: 0.2rem; /* reduced from 0.5rem */
+}
+
+#form-page-2 input[type="text"],
+#form-page-2 input[type="email"],
+#form-page-2 input[type="tel"],
+#form-page-2 input[type="number"] {
+  margin-bottom: 1rem;
+}
+
+/* Animation keyframes */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(10px); }
+}
+
+/* Animation classes */
+.fade-in {
+  animation: fadeIn 0.4s ease forwards;
+}
+
+.fade-out {
+  animation: fadeOut 0.3s ease forwards;
+}
+
+/* --- Page fade animations --- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(10px); }
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease forwards;
+}
+
+.fade-out {
+  animation: fadeOut 0.3s ease forwards;
+}
+
+/* --- Logo smash animation --- */
+@keyframes smashIn {
+  0% {
+    transform: scale(0.1) rotate(-30deg);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.2) rotate(10deg);
+    opacity: 1;
+  }
+  80% {
+    transform: scale(0.95) rotate(-5deg);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}
+
+.logo-smash {
+  animation: smashIn 0.6s ease-out;
+  transform-origin: center;
+}

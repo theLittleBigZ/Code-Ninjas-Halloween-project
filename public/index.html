@@ -7,95 +7,62 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="page">
-    <div class="card registration-wrapper">
-      <div class="registration-top">
-        <div class="brand">
-          <span class="logo" aria-hidden="true">
-            <!-- simple ninja mask svg -->
-            <svg width="42" height="42" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;border-radius:8px;">
-              <rect width="24" height="24" rx="4" fill="url(#g)" />
-              <defs>
-                <linearGradient id="g" x1="0" x2="1">
-                  <stop offset="0" stop-color="#425b76"/>
-                  <stop offset="1" stop-color="#187abf"/>
-                </linearGradient>
-              </defs>
-              <path d="M6 12c2-2 4-3 6-3s4 1 6 3v2c-2 1-4 1-6 1s-4 0-6-1v-2z" fill="rgba(255,255,255,0.9)"/>
-              <path d="M8.5 9a1.2 1.2 0 11-2.4 0 1.2 1.2 0 012.4 0zM17.9 9a1.2 1.2 0 11-2.4 0 1.2 1.2 0 012.4 0z" fill="#fff" opacity="0.95"/>
-            </svg>
-          </span>
-          <div>
-            <div class="title">Code Ninjas — Photo Booth</div>
-            <div class="small">Registration</div>
-          </div>
-        </div>
-        <div class="small">Quick form — we will email a QR code</div>
+  <div class="card">
+    <form id="registration-form">
+      <div id="form-page-1">
+        <h1>Photo Booth Registration</h1>
+        <img 
+          src="https://www.kcstem.org/wp-content/uploads/2018/10/Code_Ninjas_Color_Vertical-300x136.png" 
+          alt="Code Ninjas Logo" 
+          style="width:250px; margin-bottom: 1rem; display: block; margin-left: auto; margin-right: auto;"
+        >
+
+        <label for="parentFirst">Parent/Guardian First Name:</label>
+        <input type="text" id="parentFirst" name="parentFirst" required><br>
+
+        <label for="parentLast">Parent/Guardian Last Name:</label>
+        <input type="text" id="parentLast" name="parentLast" required><br>
+
+        <label for="children">Child(ren) Name(s):</label>
+        <input type="text" id="children" name="children" required><br>
+
+        <label for="ages">Child(ren) Age(s):</label>
+        <input type="text" id="ages" name="ages" required placeholder="e.g. 7, 10"><br>
+
+        <label for="numPhotos">How many photos do you need?</label>
+        <input type="number" id="numPhotos" name="numPhotos" min="1" max="5" required style="width:250px; margin-left:auto; margin-right:auto; display:block;"><br>
+
+        <button type="button" id="next-btn">Next</button>
       </div>
+      <div id="form-page-2" style="display:none;">
+        <h1>Photo Booth Registration</h1>
+        <img 
+          src="https://www.kcstem.org/wp-content/uploads/2018/10/Code_Ninjas_Color_Vertical-300x136.png" 
+          alt="Code Ninjas Logo" 
+          style="width:250px; margin-bottom: 1rem; display: block; margin-left: auto; margin-right: auto;"
+        >
 
-      <form id="registration-form" class="card" novalidate>
-        <div>
-          <label for="parent-first">Parent / Guardian First Name</label>
-          <input id="parent-first" name="parentFirst" type="text" required>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required placeholder="example@email.com"><br>
+
+        <label for="phone">Enter your phone number:</label>
+        <input type="tel" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required placeholder="123-456-7890"><br>
+
+        <label for="postal">Postal Code:</label>
+        <input type="text" id="postal" name="postal" required placeholder="A1A 1A1"><br>
+
+        <label for="consent" style="margin-bottom:0;">
+          <input type="checkbox" id="consent" name="consent" required style="width:auto; display:inline;">
+          I consent to photo booth participation.
+        </label>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; align-items: center;">
+          <button type="button" id="back-btn" class="secondary small-btn">Back</button>
+          <button type="submit">Register</button>
         </div>
-
-        <div>
-          <label for="parent-last">Parent / Guardian Last Name</label>
-          <input id="parent-last" name="parentLast" type="text" required>
-        </div>
-
-        <div>
-          <label for="email">Email</label>
-          <input id="email" name="email" type="email" required>
-        </div>
-
-        <div>
-          <label for="phone">Phone number</label>
-          <input id="phone" name="phone" type="tel" placeholder="123-456-7890" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required>
-        </div>
-
-        <div>
-          <label for="postal">Postal code</label>
-          <input id="postal" name="postal" type="text">
-        </div>
-
-        <div>
-          <label for="num-photos">How many photos to take?</label>
-          <input id="num-photos" name="numPhotos" type="number" min="1" max="10" value="1" required>
-        </div>
-
-        <div class="full-width">
-          <label for="children">Child(ren) names (comma separated)</label>
-          <input id="children" name="children" type="text" placeholder="e.g. Alice, Ben">
-          <div class="hint">If multiple, separate names with commas. Ages can be added in the next field.</div>
-        </div>
-
-        <div class="full-width">
-          <label for="ages">Child(ren) ages (comma separated)</label>
-          <input id="ages" name="ages" type="text" placeholder="e.g. 7, 9">
-        </div>
-
-        <div class="full-width">
-          <label for="consent">Photo consent</label>
-          <select id="consent" name="consent" required>
-            <option value="">Select...</option>
-            <option value="agree">Agree</option>
-            <option value="disagree">Disagree</option>
-          </select>
-        </div>
-
-        <div class="actions full-width">
-          <button type="submit">Register &amp; Save to CSV</button>
-          <button type="button" class="secondary" id="clear-btn">Clear</button>
-        </div>
-      </form>
-
-      <div id="registration-result" class="small" aria-live="polite"></div>
-      <div id="qr-container" style="margin-top:12px; display:none; text-align:center;">
-        <div class="small">Scan this QR at the photobooth:</div>
-        <img id="qr-image" src="" alt="QR Code" style="max-width:260px; width:100%; height:auto; border:1px solid #ddd; margin-top:8px;" />
       </div>
-    </div>
+    </form>
+    <div id="registration-result"></div>
   </div>
   <script src="script.js"></script>
 </body>

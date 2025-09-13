@@ -1,8 +1,4 @@
 // Shared JS for registration and photobooth pages
-// TODO: Add form submission logic for registration
-// TODO: Add QR code scanning and photo capture logic for photobooth
-
-// Example: Registration form handler
 const regForm = document.getElementById('registration-form');
 if (regForm) {
   regForm.addEventListener('submit', async function(e) {
@@ -66,5 +62,36 @@ if (clearBtn && regForm) {
   });
 }
 
-// Example: Photobooth logic (to be implemented)
-// ...
+// Show next page with fade effect
+nextBtn.onclick = function () {
+  page1.classList.remove('fade-in');
+  page1.classList.add('fade-out');
+
+  setTimeout(() => {
+    page1.style.display = 'none';
+    page2.style.display = 'block';
+    page2.classList.remove('fade-out');
+    page2.classList.add('fade-in');
+    animateLogoSmash(); // Re-trigger logo animation
+  }, 300);
+};
+
+// Show previous page with fade effect
+backBtn.onclick = function () {
+  page2.classList.remove('fade-in');
+  page2.classList.add('fade-out');
+
+  setTimeout(() => {
+    page2.style.display = 'none';
+    page1.style.display = 'block';
+    page1.classList.remove('fade-out');
+    page1.classList.add('fade-in');
+    animateLogoSmash(); // Re-trigger logo animation
+  }, 300);
+};
+
+// Initial animations on page load
+window.onload = function () {
+  page1.classList.add('fade-in');
+  animateLogoSmash();
+};
