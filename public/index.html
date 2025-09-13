@@ -7,24 +7,40 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div style="text-align: center; background: linear-gradient(to right, #0d0e65, #233c8e, #4e68c4, #7e92ea); width: 100%; margin: 0%; left: 0%;">
+  <div style="text-align: center; background: linear-gradient(to right, #0d0e65, #233c8e, #4e68c4, #7e92ea); width: 100%; margin: 0%; left: 0%;" class="whitemarged">
     <img src="assets/images/Code_Ninjas_Powell_Logo-1-removebg-preview (1).png" alt="Code Ninjas Stouffville Logo" style="max-width: 200px; height: auto;">
   </div>
   <h1>Photo Booth Registration</h1>
+  <div class="whitemarged2">
   <form class="marged" id="registration-form">
     <!-- TODO: Add form fields for parent/guardian info, child info, etc. -->
     <!-- Example: -->
-    <div class="marged"><label>First Name: <input type="text" name="firstName" required></label><br></div>
-    <div class="marged"><label>Last Name: <input type="text" name="lastName" required></label><br></div>
-    <div class="marged"><label>Email: <input type="email" name="email" required></label><br></div>
-    <div class="marged"><label>Secondary Email: <input type="email" name="secondaryEmail"></label><br></div>
-    <!-- Add more fields as needed -->
-
-    <div class="marged"><label for="phone">Enter your phone number:<input type="tel" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"></label></div>
-  
+    <div class="whitemarged"><label>Parent / Guardian First Name: <input type="text" name="firstName" required></label><br></div>
+    <div class="whitemarged"><label>Parent / Guardian Last Name: <input type="text" name="lastName" required></label><br></div>
+    <div class="whitemarged"><label>Email: <input type="email" name="email" required></label><br></div>
+    <div class="whitemarged"><label>Phone number: <input type="text" name="phoneNumber" required></label><br></div>
+    <div class="whitemarged"><label>Postal Code: <input type="text" name="postalCode" required></label><br></div>
+    <div class="whitemarged"><label>How many photos to take?: <input type="number" min = "1" max = "5" step = "1" name="secondaryEmail"></label><br></div>
+    <div class="whitemarged"><label>Secondary Email: <input type="email" name="email" required></label><br></div>
+    <div class="whitemarged"><label>Child(ren) names (comma separated): <input type="email" name="email" required></label><br></div>
+    <div class="whitemarged"><label>Child(ren) ages (comma separated): <input type="text" name="text" required></label><br></div>    <!-- Add more fields as needed -->  
     <br>
     <button type="submit">Register</button>
   </form>
+  </div>
+
+<form class="marged" id="registration-form">
+  <div class="whitemarged" style = "font-size: 20px; margin-top: 10px; margin-bottom: 20px"><label><h1 style = "font-size: 30px; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color:black;">Photo Consent:</h1><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p></label><br></div>
+  <label style = "font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 30px; margin-right: 5px; margin-top: 10px; margin-bottom: 20px;" for="Consent">Photo Consent:</label>
+  <select class = "whitemarged2" style = "font-size: 30px; margin-left: 5px; margin-top: 10px; margin-bottom: 20px;"name="Consent" id="Consent">
+      <option class = "whitemarged2" value="">select...</option>
+      <option class = "whitemarged2" value="yes">Agree</option>
+      <option class = "whitemarged2" value="no">Disagree</option>
+  </select>
+</form>
+
+  </form>
+
   <div class="marged" id="registration-result"></div>
   <script src="script.js"></script>
 </body>
