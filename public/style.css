@@ -52,7 +52,7 @@
 
 
 body {
-	font-family: 'Segoe UI', 'Arial', sans-serif;
+	font-family: 'Segoe UI', Arial, sans-serif;
 	background: #0074d9;
 	min-height: 100vh;
 	margin: 0;
@@ -106,9 +106,8 @@ button {
 	font-size: 1.1em;
 	font-weight: bold;
 	box-shadow: 0 2px 8px #7be49544;
-	transition: background 0.2s, transform 0.2s;
+	transition: 0.3s, transform 0.2s;
 }
-
 button:hover:not(:disabled) {
 	background: radial-gradient(circle at center, #43c87f 40%, #7be495 100%);
 	transform: translateY(-2px) scale(1.04);

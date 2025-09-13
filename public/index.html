@@ -9,10 +9,10 @@
 <body>
   <h1>Code Ninjas Stouffville Photo Booth Registration Form</h1>
   <form id="registration-form">
-  <div class="form-box">
+  <div class="form-box" style="min-height: 600px;">
   <div class="form-grid">
-        <div class="section-box" style="grid-column: 1 / span 2;">
-          <span class="form-subtitle">Information</span>
+  <div class="section-box" style="grid-column: 1 / span 2; min-height: 20px;">
+            <span class="form-subtitle">Identity</span>
           <div class="section-fields">
             <div>
               <label>First Name:<br><input type="text" name="firstName" required></label>
@@ -32,37 +32,38 @@
           </div>
         </div>
         <div class="section-box" style="grid-column: 1 / span 2;">
-          <span class="form-subtitle">Group</span>
+            <span class="form-subtitle">Information</span>
           <div class="section-fields">
             <div style="grid-column: 1 / span 2; display: flex; justify-content: center;">
-              <label>Amount of People:<br><input type ="number" name="amountOfPeople" required></label>
+              <label>Amount of People:<br><input type ="number" name="amountOfPeople" required min="0"></label>
+              <label>Amount of Photos:<br><input type ="number" name="amountOfPhotos" required min="0"></label>
             </div>
         </div>
       </div>
       <div class="section-box" style="grid-column: 1 / span 2;">
         <span class="form-subtitle">Consent</span>
         <div class="section-fields" style="grid-template-columns: 1fr;">
-          <div style="display: flex; justify-content: center; align-items: center;">
+          <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
             <label style="font-weight: 500; font-size: 1em; display: flex; flex-direction: column; align-items: flex-start; width: 100%;">
               <span>
                 I hereby grant Code Ninjas and its representatives permission to photograph and/or record video of myself and my child(ren) during this event. I understand that these images and recordings may be used for promotional, marketing, and educational purposes in print and digital media, including social media. I acknowledge that no compensation will be provided and that all rights to the images and recordings belong to Code Ninjas. I have read and understand this consent and release.
               </span>
+              <span style="font-size: 0.98em; margin-top: 1em; display: block; text-align: center; width: 100%;">Do you agree?</span>
               <select name="consent" required style="margin-top: 0.7em; width: 60%; padding: 0.7em; border-radius: 6px; border: 1px solid #0074d9; background: #fff; color: #003366; font-size: 1em; display: block; margin-left: auto; margin-right: auto;">
                 <option value="">Please select</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
               </select>
-              <span style="font-size: 0.98em; margin-top: 1em; display: block; text-align: center; width: 100%;">Do you agree to the above consent and release?</span>
             </label>
+            <div style="width: 100%; display: flex; justify-content: center; margin-top: 1.5em;">
+              <button type="submit">Register</button>
+            </div>
           </div>
         </div>
-          </div>
+      </div>
         </div>
       </div>
       <!-- Add more fields as needed -->
-      <div style="width: 100%; display: flex; justify-content: center; margin-top: 1.5em;">
-        <button type="submit">Register</button>
-      </div>
     </div>
   </form>
   <div id="registration-result"></div>
