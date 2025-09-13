@@ -8,11 +8,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
 const fs = require('fs');
-const DB_PATH = path.join(__dirname, 'db.csv');
 const crypto = require('crypto');
+const knex = require('./db');
 
 // Simple registration endpoint that appends a JSON line to db.text
-app.post('/register', (req, res) => {
+app.post('/register', async (req, res) => {
   try {
     const body = req.body || {};
 
@@ -28,47 +28,26 @@ app.post('/register', (req, res) => {
       createdAt: new Date().toISOString()
     });
 
-    // Helper to CSV-escape a value
-    function csvEscape(v) {
-      if (v === undefined || v === null) return '';
-      const s = String(v);
-      return '"' + s.replace(/"/g, '""') + '"';
-    }
-
-    const headers = ['id','uuid','createdAt','parentFirst','parentLast','email','phone','postal','numPhotos','children','ages','consent'];
-    const rowValues = [
-      record.id,
-      record.uuid,
-      record.createdAt,
-      record.parentFirst,
-      record.parentLast,
-      record.email,
-      record.phone,
-      record.postal,
-      record.numPhotos,
-      record.children,
-      record.ages,
-      record.consent
-    ];
-
-    const row = rowValues.map(csvEscape).join(',') + '\n';
-
-    // If file doesn't exist, write header first, otherwise append row
-    fs.access(DB_PATH, fs.constants.F_OK, (err) => {
-      const data = err ? headers.join(',') + '\n' + row : row;
-      fs.appendFile(DB_PATH, data, (err) => {
-        if (err) {
-          console.error('Failed to write to DB CSV', err);
-          return res.status(500).json({ ok: false, error: 'Failed to save' });
-        }
-
-        // Build a QR link that points to the /user/:uuid endpoint on this server
-        const qrData = `${req.protocol}://${req.get('host')}/user/${encodeURIComponent(record.uuid)}`;
-        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=650x650&data=${encodeURIComponent(qrData)}`;
-
-        return res.status(201).json({ ok: true, id: record.id, uuid: record.uuid, qrUrl });
-      });
+    // Insert into DB
+    await knex('registrations').insert({
+      id: record.id,
+      uuid: record.uuid,
+      createdAt: record.createdAt,
+      parentFirst: record.parentFirst,
+      parentLast: record.parentLast,
+      email: record.email,
+      phone: record.phone || '',
+      postal: record.postal || '',
+      numPhotos: Number(record.numPhotos) || 1,
+      children: record.children || '',
+      ages: record.ages || '',
+      consent: record.consent || ''
     });
+
+    const qrData = `${req.protocol}://${req.get('host')}/user/${encodeURIComponent(record.uuid)}`;
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=650x650&data=${encodeURIComponent(qrData)}`;
+
+    return res.status(201).json({ ok: true, id: record.id, uuid: record.uuid, qrUrl });
   } catch (err) {
     console.error(err);
     res.status(500).json({ ok: false, error: 'Server error' });
@@ -89,21 +68,27 @@ app.listen(PORT, () => {
 });
 
 // Simple lookup endpoint to return registration by UUID (reads CSV)
-app.get('/user/:uuid', (req, res) => {
+app.get('/user/:uuid', async (req, res) => {
   const uuid = req.params.uuid;
-  fs.readFile(DB_PATH, 'utf8', (err, data) => {
-    if (err) return res.status(404).json({ ok: false, error: 'Not found' });
-    const lines = data.split('\n').filter(Boolean);
-    if (lines.length < 2) return res.status(404).json({ ok: false, error: 'No records' });
-    const header = lines[0].split(',').map(h => h.replace(/^"|"$/g, ''));
-    for (let i = 1; i < lines.length; i++) {
-      const cols = parseCsvLine(lines[i]);
-      const obj = {};
-      header.forEach((h, idx) => { obj[h] = cols[idx] || ''; });
-      if (obj.uuid === uuid) return res.json({ ok: true, record: obj });
-    }
-    return res.status(404).json({ ok: false, error: 'Record not found' });
-  });
+  try {
+    const rec = await knex('registrations').where({ uuid }).first();
+    if (!rec) return res.status(404).json({ ok: false, error: 'Record not found' });
+    return res.json({ ok: true, record: rec });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ ok: false, error: 'Server error' });
+  }
+});
+
+// Admin: list registrations (no auth - consider adding in production)
+app.get('/admin/registrations', async (req, res) => {
+  try {
+    const rows = await knex('registrations').orderBy('createdAt', 'desc').limit(1000);
+    return res.json({ ok: true, rows });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ ok: false, error: 'Server error' });
+  }
 });
 
 function parseCsvLine(line) {
