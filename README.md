@@ -1,5 +1,7 @@
 # Code-Ninjas-Halloween-project
 
+# Code-Ninjas-Halloween-project
+
 ### Project Overview
 This project is going to be used in an upcoming Halloween event, we are going to be creating an automated photo-booth this photobooth has 2 parts a registration form for users to signup once they have signed up they will be emailed a QR code, and will wait in line to get to the photo booth once at the photobooth they will scan the qrcode code to start the photobooth the photobooth will take photos and apply edits to them then email them to the user
 
@@ -52,3 +54,42 @@ Will be running on a tablet and will take a photo of the user and apply edits to
 - [ ] Add Google Sheets integration for registration data
 - [ ] Add more advanced photo effects
 - [ ] Add admin dashboard to view registrations
+
+---
+
+## Database (SQLite) setup
+
+This project now uses SQLite (via Knex) for storing registrations in `data/dev.sqlite3`.
+
+Quick steps to set up the database locally:
+
+1. Install dependencies (if you haven't already):
+
+```bash
+npm install
+```
+
+2. Create the data directory (if it doesn't exist) and run migrations to create the `registrations` table:
+
+```bash
+mkdir -p data
+npx knex --knexfile knexfile.js migrate:latest
+```
+
+3. Start the server and test the registration form:
+
+```bash
+node server.js
+# then open http://localhost:3000 in your browser and use the registration form
+```
+
+What was added
+- `knexfile.js` — Knex configuration (development uses `./data/dev.sqlite3`)
+- `db.js` — simple Knex connection helper
+- `migrations/20250913_create_registrations.js` — migration to create the `registrations` table
+- Updated `server.js` to insert registrations into the DB and read by `uuid`
+
+Notes
+- The project intentionally skips importing existing `db.csv` test data. If you want to import it later, I can add a migration/import script.
+- Don't commit `data/dev.sqlite3` to git; `.gitignore` already ignores the `data/` directory.
+- To switch to Postgres later, update `knexfile.js` to use `pg` and set the connection via environment variables.

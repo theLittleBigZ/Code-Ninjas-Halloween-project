@@ -1,28 +1,64 @@
 // Shared JS for registration and photobooth pages
 const regForm = document.getElementById('registration-form');
 if (regForm) {
-  regForm.addEventListener('submit', function (e) {
+  regForm.addEventListener('submit', async function(e) {
     e.preventDefault();
-    document.getElementById('registration-result').textContent =
-      'Registration submitted! (Implement backend logic)';
+    const resultEl = document.getElementById('registration-result');
+    resultEl.textContent = '';
+
+    // Collect form data into an object
+    const formData = new FormData(regForm);
+    const payload = {};
+    formData.forEach((v, k) => { payload[k] = v; });
+
+    try {
+      const resp = await fetch('/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await resp.json().catch(() => ({}));
+      if (!resp.ok) {
+        resultEl.textContent = data && data.error ? `Error: ${data.error}` : 'Registration failed';
+        // hide QR if present
+        const qrContainer = document.getElementById('qr-container');
+        if (qrContainer) qrContainer.style.display = 'none';
+        return;
+      }
+      resultEl.textContent = 'Registration saved — record appended to db.csv.';
+      // show QR if server returned an url
+      if (data && data.qrUrl) {
+        const qrImage = document.getElementById('qr-image');
+        const qrContainer = document.getElementById('qr-container');
+        if (qrImage && qrContainer) {
+          qrImage.src = data.qrUrl;
+          qrContainer.style.display = 'block';
+        }
+      }
+      // Optionally clear the form after successful registration
+      // regForm.reset();
+    } catch (err) {
+      console.error(err);
+      resultEl.textContent = 'Network error — unable to register.';
+    }
   });
 }
 
-// Get form pages and buttons
-const page1 = document.getElementById('form-page-1');
-const page2 = document.getElementById('form-page-2');
-const nextBtn = document.getElementById('next-btn');
-const backBtn = document.getElementById('back-btn');
+// Clear button: reset the registration form and clear the result message
+const clearBtn = document.getElementById('clear-btn');
+if (clearBtn && regForm) {
+  clearBtn.addEventListener('click', function() {
+    // Reset form fields to their initial values
+    regForm.reset();
 
-// Get all logo images (just in case there are more than one)
-const logos = document.querySelectorAll('.logo');
+    // Clear any result/notification text
+    const resultEl = document.getElementById('registration-result');
+    if (resultEl) resultEl.textContent = '';
 
-// Function to trigger the smash animation
-function animateLogoSmash() {
-  logos.forEach(logo => {
-    logo.classList.remove('logo-smash');      // Remove if already added
-    void logo.offsetWidth;                    // Force reflow (restarts animation)
-    logo.classList.add('logo-smash');         // Add class to trigger animation
+    // Focus the first form control for convenience
+    const firstControl = regForm.querySelector('input, select, textarea');
+    if (firstControl) firstControl.focus();
   });
 }
 

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>DB Viewer - Registrations</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="page">
+    <div class="card">
+      <div class="title">Registrations (live)</div>
+      <div class="small">This page refreshes every 5 minutes</div>
+      <div style="margin-top:12px;">
+        <input id="filter" placeholder="Filter by parent name or email" style="width:100%; padding:8px; box-sizing:border-box;" />
+      </div>
+      <div id="rows" style="margin-top:12px; overflow:auto; max-height:60vh;"></div>
+      <div style="margin-top:12px; display:flex; gap:8px;">
+        <button id="refresh">Refresh now</button>
+        <div id="last-updated" class="small" style="margin-left:auto;"></div>
+      </div>
+    </div>
+  </div>
+  <script src="db-viewer.js"></script>
+</body>
+</html>
