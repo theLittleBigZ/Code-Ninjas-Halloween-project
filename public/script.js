@@ -1,5 +1,15 @@
 // Phone number formatting and validation
 document.addEventListener('DOMContentLoaded', function() {
+  // Mouse repulsion setup
+  let mouse = { x: null, y: null };
+  window.addEventListener('mousemove', function(e) {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+  });
+  window.addEventListener('mouseleave', function() {
+    mouse.x = null;
+    mouse.y = null;
+  });
   // Floating, shifting triangles foreground
   const triCanvas = document.getElementById('tri-canvas');
   if (triCanvas) {
@@ -33,8 +43,25 @@ document.addEventListener('DOMContentLoaded', function() {
   // No longer used
     }
     function animateTriangles() {
+      // Mouse repulsion
+      const mouseRepelDist = 200;
+      const mouseRepelStrength = 1;
+      if (mouse.x !== null && mouse.y !== null) {
+        allPoints.forEach(pt => {
+          const dx = pt.x - mouse.x;
+          const dy = pt.y - mouse.y;
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < mouseRepelDist && dist > 1) {
+            let repelForce = mouseRepelStrength * (mouseRepelDist - dist) / mouseRepelDist;
+            const fx = (dx / dist) * repelForce;
+            const fy = (dy / dist) * repelForce;
+            pt.vx += fx;
+            pt.vy += fy;
+          }
+        });
+      }
   const collisionDist = 36; // points are drawn with radius 18
-  const collisionRepelStrength = 2.5;
+  const collisionRepelStrength = 0.05;
       ctx.clearRect(0, 0, triCanvas.width, triCanvas.height);
       const time = Date.now();
       const edgePushStrength = 0.0012;
@@ -73,6 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // F = G * m1 * m2 / r^2
             let force = G * ptA.mass * ptB.mass / distSq;
             force = Math.min(force, 1.5); // clamp for stability
+            
             // Directional force
             const fx = (dx / dist) * force;
             const fy = (dy / dist) * force;
@@ -83,8 +111,8 @@ document.addEventListener('DOMContentLoaded', function() {
                   let repelForce = collisionRepelStrength * (collisionDist - dist) / collisionDist;
                   const rfx = -(dx / dist) * repelForce;
                   const rfy = -(dy / dist) * repelForce;
-                  ptA.vx += rfx;
-                  ptA.vy += rfy;
+                  ptA.vx += rfx * 0.99;
+                  ptA.vy += rfy * 0.99;
                 }
           }
         }
