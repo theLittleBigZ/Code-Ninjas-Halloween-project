@@ -15,12 +15,12 @@
 
       <div class="form-group">
         <label for="firstName">First Name</label>
-        <input type="text" id="firstName" name="firstName" required>
+        <input type="text" id="firstName" name="firstName" required placeholder="John">
       </div>
 
       <div class="form-group">
         <label for="lastName">Last Name</label>
-        <input type="text" id="lastName" name="lastName" required>
+        <input type="text" id="lastName" name="lastName" required placeholder="Doe">
       </div>
 
       <div class="form-group">
@@ -42,19 +42,19 @@
 
       <div class="form-group">
         <label for="pictureAmount">How many pictures are being taken?</label>
-        <input type="number" id="pictureAmount" name="pictureAmount" min="1" max="6" required>
+        <input type="number" id="pictureAmount" name="pictureAmount" min="1" max="6" required placeholder="1">
         <div id="picture-error" class="input-error" style="display:none;"></div>
       </div>
 
       <div class="form-group">
           <label for="children">Child(ren) names (comma separated)</label>
-          <input id="children" name="children" type="text" placeholder="e.g. Alice, Ben">
+          <input id="children" name="children" type="text" required placeholder="e.g. Alice, Ben">
           <div class="hint">If multiple, separate names with commas. Ages can be added in the next field.</div>
         </div>
 
         <div class="form-group">
           <label for="ages">Child(ren) ages (comma separated)</label>
-          <input id="ages" name="ages" type="text" placeholder="e.g. 7, 9">
+          <input id="ages" name="ages" type="text" required placeholder="e.g. 7, 9">
         </div>
 
         <div class="form-group">

@@ -123,9 +123,9 @@ document.addEventListener('DOMContentLoaded', function() {
         ctx.beginPath();
         ctx.arc(pt.x, pt.y, 18, 0, Math.PI * 2);
         ctx.closePath();
-        ctx.fillStyle = `hsla(${Math.floor((pt.offset*100)%360)}, 60%, 70%, 0.18)`;
+        ctx.fillStyle = Math.random() < 0.5 ? '#fff' : '#aaaaaa';
         ctx.shadowColor = ctx.fillStyle;
-        ctx.shadowBlur = 32;
+        ctx.shadowBlur = 50;
         ctx.fill();
         ctx.restore();
       });
