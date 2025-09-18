@@ -1,7 +1,5 @@
 # Code-Ninjas-Halloween-project
 
-# Code-Ninjas-Halloween-project
-
 ### Project Overview
 This project is going to be used in an upcoming Halloween event, we are going to be creating an automated photo-booth this photobooth has 2 parts a registration form for users to signup once they have signed up they will be emailed a QR code, and will wait in line to get to the photo booth once at the photobooth they will scan the qrcode code to start the photobooth the photobooth will take photos and apply edits to them then email them to the user
 
