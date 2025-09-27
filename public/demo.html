@@ -1,126 +1,285 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Camera demo</title>
-    <style>
-        body { font-family: system-ui, -apple-system, Arial, sans-serif; margin: 16px; }
-        .controls { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
-        video { background:#000; width:100%; max-width:640px; height:auto; border-radius:8px; }
-        #preview { margin-top:12px; max-width:640px; display:block; }
-        canvas { display:none; }
-        .small { color:#666; font-size:0.9em; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Camera demo</title>
+  <style>
+    html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+      font-family: system-ui, -apple-system, Arial, sans-serif;
+      color: white;
+    }
+
+    .container {
+      background: #181c21;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: stretch;
+      justify-content: stretch;
+      position: relative;
+    }
+
+    .pattern-bg {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: repeating-linear-gradient(
+        135deg,
+        #232526 0px,
+        #232526 60px,
+        #23252699 70px,
+        #414345 130px
+      );
+      position: relative;
+      z-index: 0;
+    }
+
+    .cube-svg {
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      left: -30%;
+      top: -20%;
+      background: transparent;
+      opacity: 0.7;
+      z-index: 1;
+      animation: cubeMove 18s linear infinite alternate;
+    }
+
+    @keyframes cubeMove {
+      from {
+        transform: translateY(0) scale(1);
+      }
+      to {
+        transform: translateY(-20%) scale(1.02) rotate(1deg);
+      }
+    }
+
+    .logo {
+      text-align: center;
+      margin-top: 12px;
+      margin-bottom: -12px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .logo img {
+      max-width: 260px;
+      width: 100%;
+      height: auto;
+    }
+
+    .overlay {
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 720px;
+      margin: 0 auto 24px;
+      overflow: visible;
+      position: relative;
+      z-index: 2;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 16px;
+      overflow: visible;
+    }
+
+    video {
+      background: #000;
+      width: 100%;
+      max-width: 640px;
+      height: auto;
+      border-radius: 8px;
+    }
+
+    #preview {
+      margin-top: 12px;
+      max-width: 640px;
+      display: block;
+    }
+
+    canvas {
+      display: none;
+    }
+
+    .small {
+      color: #f0f0f0;
+      font-size: 0.9em;
+    }
+
+    .btn {
+      width: 130px;
+      height: 40px;
+      font-size: 1.1em;
+      cursor: pointer;
+      background-color: #171717;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      transition: all .4s;
+      flex-shrink: 0;
+    }
+
+    .btn:hover {
+      border-radius: 5px;
+      transform: translateY(-10px);
+      box-shadow: 0 7px 0 -2px #f85959,
+                  0 15px 0 -4px #39a2db,
+                  0 16px 10px -3px #39a2db;
+    }
+
+    .btn:active {
+      transition: all 0.2s;
+      transform: translateY(-5px);
+      box-shadow: 0 2px 0 -2px #f85959,
+                  0 8px 0 -4px #39a2db,
+                  0 12px 10px -3px #39a2db;
+    }
+
+    select#device-select {
+      background-color: #171717;
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 5px;
+      font-size: 1em;
+      width: 130px;
+      height: 40px;
+      flex-shrink: 0;
+    }
+
+    select#device-select option {
+      background-color: #171717;
+      color: #fff;
+    }
+  </style>
 </head>
 <body>
-    <h1>Camera demo</h1>
-    <div class="controls">
-        <label for="device-select" class="small">Camera:</label>
-        <select id="device-select"></select>
-        <button id="start">Start</button>
-        <button id="stop">Stop</button>
-        <button id="capture">Capture</button>
-        <a id="download-link" style="display:none; margin-left:8px;">Download</a>
+  <div class="container">
+    <div class="pattern-bg">
+      <div class="cube-svg"></div>
+
+      <div class="logo">
+        <img src="https://imgs.search.brave.com/dbXD6Yq38cPFrynpHGdL2VeFONaNBRk5FuHE7N6GciY/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMtY3NlLmNhbnZh/LmNvbS9ibG9iLzEx/MTk1NDUvQ29kZU5p/bmphc0xvZ28xLnBu/Zw" alt="Logo" />
+      </div>
+
+      <div class="overlay">
+        <h1>Code Ninjas Stouffville Halloween Photobooth</h1>
+        <div class="controls">
+          <label for="device-select" class="small">Camera:</label>
+          <select id="device-select"></select>
+          <button id="start" class="btn">Start</button>
+          <button id="stop" class="btn">Stop</button>
+          <button id="capture" class="btn">Capture</button>
+          <a id="download-link" class="btn" style="display:none;">Download</a>
+        </div>
+
+        <div class="small">Allow camera access when prompted. The preview will update when you capture a photo.</div>
+
+        <video id="video" autoplay playsinline></video>
+        <canvas id="canvas"></canvas>
+        <img id="preview" alt="Captured photo preview" />
+      </div>
     </div>
+  </div>
 
-    <div class="small">Allow camera access when prompted. The preview will update when you capture a photo.</div>
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const preview = document.getElementById('preview');
+    const startBtn = document.getElementById('start');
+    const stopBtn = document.getElementById('stop');
+    const captureBtn = document.getElementById('capture');
+    const deviceSelect = document.getElementById('device-select');
+    const downloadLink = document.getElementById('download-link');
 
-    <video id="video" autoplay playsinline></video>
-    <canvas id="canvas"></canvas>
-    <img id="preview" alt="Captured photo preview" />
+    let currentStream = null;
 
-    <script>
-        const video = document.getElementById('video');
-        const canvas = document.getElementById('canvas');
-        const preview = document.getElementById('preview');
-        const startBtn = document.getElementById('start');
-        const stopBtn = document.getElementById('stop');
-        const captureBtn = document.getElementById('capture');
-        const deviceSelect = document.getElementById('device-select');
-        const downloadLink = document.getElementById('download-link');
-
-        let currentStream = null;
-
-        async function getCameras() {
-            try {
-                const devices = await navigator.mediaDevices.enumerateDevices();
-                const cams = devices.filter(d => d.kind === 'videoinput');
-                deviceSelect.innerHTML = '';
-                cams.forEach((c, idx) => {
-                    const opt = document.createElement('option');
-                    opt.value = c.deviceId;
-                    opt.textContent = c.label || `Camera ${idx+1}`;
-                    deviceSelect.appendChild(opt);
-                });
-                if (!cams.length) {
-                    const opt = document.createElement('option');
-                    opt.textContent = 'No camera found';
-                    deviceSelect.appendChild(opt);
-                }
-            } catch (err) {
-                console.error('enumerateDevices failed', err);
-            }
-        }
-
-        async function startCamera() {
-            if (currentStream) stopCamera();
-            const deviceId = deviceSelect.value || undefined;
-            const constraints = {
-                video: deviceId ? { deviceId: { exact: deviceId } } : { facingMode: 'environment' },
-                audio: false
-            };
-            try {
-                currentStream = await navigator.mediaDevices.getUserMedia(constraints);
-                video.srcObject = currentStream;
-            } catch (err) {
-                alert('Unable to access camera: ' + (err && err.message));
-                console.error(err);
-            }
-        }
-
-        function stopCamera() {
-            if (!currentStream) return;
-            currentStream.getTracks().forEach(t => t.stop());
-            currentStream = null;
-            video.srcObject = null;
-        }
-
-        function capturePhoto() {
-            if (!video || !video.videoWidth) return alert('Camera not started');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            const dataUrl = canvas.toDataURL('image/png');
-            preview.src = dataUrl;
-            downloadLink.href = dataUrl;
-            downloadLink.download = `photo-${Date.now()}.png`;
-            downloadLink.style.display = 'inline-block';
-            downloadLink.textContent = 'Download image';
-        }
-
-        // Wire UI
-        startBtn.addEventListener('click', startCamera);
-        stopBtn.addEventListener('click', stopCamera);
-        captureBtn.addEventListener('click', capturePhoto);
-
-        deviceSelect.addEventListener('change', () => {
-            // restart when device changes
-            if (currentStream) startCamera();
+    async function getCameras() {
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const cams = devices.filter(d => d.kind === 'videoinput');
+        deviceSelect.innerHTML = '';
+        cams.forEach((c, idx) => {
+          const opt = document.createElement('option');
+          opt.value = c.deviceId;
+          opt.textContent = c.label || `Camera ${idx+1}`;
+          deviceSelect.appendChild(opt);
         });
+        if (!cams.length) {
+          const opt = document.createElement('option');
+          opt.textContent = 'No camera found';
+          deviceSelect.appendChild(opt);
+        }
+      } catch (err) {
+        console.error('enumerateDevices failed', err);
+      }
+    }
 
-        // Populate camera list on load
-        (async () => {
-            if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) return;
-            await getCameras();
-            // Auto-start if possible
-            // startCamera();
-        })();
+    async function startCamera() {
+      if (currentStream) stopCamera();
+      const deviceId = deviceSelect.value || undefined;
+      const constraints = {
+        video: deviceId ? { deviceId: { exact: deviceId } } : { facingMode: 'environment' },
+        audio: false
+      };
+      try {
+        currentStream = await navigator.mediaDevices.getUserMedia(constraints);
+        video.srcObject = currentStream;
+      } catch (err) {
+        alert('Unable to access camera: ' + (err && err.message));
+        console.error(err);
+      }
+    }
 
-        // Clean up when page hidden/unloaded
-        window.addEventListener('pagehide', stopCamera);
-        window.addEventListener('beforeunload', stopCamera);
-    </script>
+    function stopCamera() {
+      if (!currentStream) return;
+      currentStream.getTracks().forEach(t => t.stop());
+      currentStream = null;
+      video.srcObject = null;
+    }
+
+    function capturePhoto() {
+      if (!video || !video.videoWidth) return alert('Camera not started');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const dataUrl = canvas.toDataURL('image/png');
+      preview.src = dataUrl;
+      downloadLink.href = dataUrl;
+      downloadLink.download = `photo-${Date.now()}.png`;
+      downloadLink.style.display = 'inline-block';
+      downloadLink.textContent = 'Download image';
+    }
+
+    startBtn.addEventListener('click', startCamera);
+    stopBtn.addEventListener('click', stopCamera);
+    captureBtn.addEventListener('click', capturePhoto);
+
+    deviceSelect.addEventListener('change', () => {
+      if (currentStream) startCamera();
+    });
+
+    (async () => {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) return;
+      await getCameras();
+    })();
+
+    window.addEventListener('pagehide', stopCamera);
+    window.addEventListener('beforeunload', stopCamera);
+  </script>
 </body>
 </html>

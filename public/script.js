@@ -1,3 +1,10 @@
+// Loader animation: show for 3 seconds, then reveal content
+setTimeout(() => {
+  document.body.classList.add('loaded');
+  const content = document.querySelector('.content');
+  if (content) content.classList.add('visible');
+}, 3000);
+
 // Shared JS for registration and photobooth pages
 // TODO: Add form submission logic for registration
 // TODO: Add QR code scanning and photo capture logic for photobooth
