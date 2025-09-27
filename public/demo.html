@@ -6,25 +6,61 @@
     <title>Camera demo</title>
     <style>
         body { font-family: system-ui, -apple-system, Arial, sans-serif; margin: 16px; }
+        h1 { font-size:1.5em; margin-bottom:0.2em; }
+
         .controls { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
-        video { background:#000; width:100%; max-width:640px; height:auto; border-radius:8px; }
+        video { background:#000000; width:100%; max-width:640px; height:auto; border-radius:8px; }
         #preview { margin-top:12px; max-width:640px; display:block; }
         canvas { display:none; }
-        .small { color:#666; font-size:0.9em; }
-    </style>
+        .small { color:#2bff00d2; font-size:0.9em; }
+        button { font-size:1em; padding: 0.5em; border-radius:4px; border:none; background:#005f87; color:#fff; cursor:pointer; }
+        /* Enter below*/
+</style>
+<style>
+    /* From Uiverse.io by Mike11jr */ 
+.btn {
+ width: 130px;
+ height: 40px;
+ font-size: 1.1em;
+ cursor: pointer;
+ background-color: #00d0ff;
+ color: #000000;
+ border: none;
+ border-radius: 5px;
+ transition: all .4s;
+}
+
+.btn:hover {
+ border-radius: 5px;
+ transform: translateY(-10px);
+ box-shadow: 0 7px 0 -2px #06ff02,
+  0 15px 0 -4px #13ba00,
+  0 16px 10px -3px #126900;
+}
+
+.btn:active {
+ transition: all 0.2s;
+ transform: translateY(-5px);
+ box-shadow: 0 2px 0 -2px #06ff02,
+  0 8px 0 -4px #13ba00,
+  0 12px 10px -3px #126900;
+}
+
+</style>
 </head>
-<body>
+<body style="background-color: #0087bc;">
     <h1>Camera demo</h1>
     <div class="controls">
         <label for="device-select" class="small">Camera:</label>
         <select id="device-select"></select>
-        <button id="start">Start</button>
-        <button id="stop">Stop</button>
-        <button id="capture">Capture</button>
-        <a id="download-link" style="display:none; margin-left:8px;">Download</a>
+        <button class="btn" id="start">Start</button>
+        <button class="btn"  id="stop">Stop</button>
+        <button class="btn"  id="capture">Capture</button>
+        <a id="download-link"><button class="btn"  id="capture">Download</button></a>
+        
     </div>
 
-    <div class="small">Allow camera access when prompted. The preview will update when you capture a photo.</div>
+    <div class="small">When prompted, click allow. Click/Press capture to take a photo.</div>
 
     <video id="video" autoplay playsinline></video>
     <canvas id="canvas"></canvas>
@@ -96,8 +132,6 @@
             preview.src = dataUrl;
             downloadLink.href = dataUrl;
             downloadLink.download = `photo-${Date.now()}.png`;
-            downloadLink.style.display = 'inline-block';
-            downloadLink.textContent = 'Download image';
         }
 
         // Wire UI
