@@ -4,13 +4,42 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Camera demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
     <style>
-        body { font-family: system-ui, -apple-system, Arial, sans-serif; margin: 16px; }
+        body { font-family: system-ui, -apple-system, Arial, sans-serif; margin: 16px; background-color: skyblue;}
         .controls { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
         video { background:#000; width:100%; max-width:640px; height:auto; border-radius:8px; }
         #preview { margin-top:12px; max-width:640px; display:block; }
         canvas { display:none; }
         .small { color:#666; font-size:0.9em; }
+        /* From Uiverse.io by Mike11jr */ 
+.btn {
+ width: 130px;
+ height: 40px;
+ font-size: 1.1em;
+ cursor: pointer;
+ background-color: #171717;
+ color: #fff;
+ border: none;
+ border-radius: 5px;
+ transition: all .4s;
+}
+
+.btn:hover {
+ border-radius: 5px;
+ transform: translateY(-10px);
+ box-shadow: 0 7px 0 -2px #f85959,
+  0 15px 0 -4px #39a2db,
+  0 16px 10px -3px #39a2db;
+}
+
+.btn:active {
+ transition: all 0.2s;
+ transform: translateY(-5px);
+ box-shadow: 0 2px 0 -2px #f85959,
+  0 8px 0 -4px #39a2db,
+  0 12px 10px -3px #39a2db;
+}
     </style>
 </head>
 <body>
@@ -18,9 +47,9 @@
     <div class="controls">
         <label for="device-select" class="small">Camera:</label>
         <select id="device-select"></select>
-        <button id="start">Start</button>
-        <button id="stop">Stop</button>
-        <button id="capture">Capture</button>
+        <button class="btn" id="start">Start</button>
+        <button class="btn" id="stop">Stop</button>
+        <button class="btn" id="capture">Capture</button>
         <a id="download-link" style="display:none; margin-left:8px;">Download</a>
     </div>
 
@@ -29,6 +58,10 @@
     <video id="video" autoplay playsinline></video>
     <canvas id="canvas"></canvas>
     <img id="preview" alt="Captured photo preview" />
+    <div id="qr-result" style="margin-top: 16px; padding: 12px; border-radius: 4px; background: #f0f0f0; display: none;">
+        <strong>QR Code detected!</strong>
+        <p id="qr-content"></p>
+    </div>
 
     <script>
         const video = document.getElementById('video');
@@ -98,6 +131,23 @@
             downloadLink.download = `photo-${Date.now()}.png`;
             downloadLink.style.display = 'inline-block';
             downloadLink.textContent = 'Download image';
+
+            // Scan for QR code
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const code = jsQR(imageData.data, imageData.width, imageData.height);
+            
+            const qrResult = document.getElementById('qr-result');
+            const qrContent = document.getElementById('qr-content');
+            
+            if (code) {
+                qrResult.style.display = 'block';
+                qrContent.textContent = code.data;
+                console.log('Found QR code:', code.data);
+            } else {
+                qrResult.style.display = 'none';
+                qrContent.textContent = '';
+                console.log('No QR code found');
+            }
         }
 
         // Wire UI
