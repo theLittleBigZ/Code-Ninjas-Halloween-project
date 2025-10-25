@@ -194,9 +194,6 @@ function capturePhoto() {
 }
 
 // Save photo to Firebase
-// Initialize EmailJS when the page loads
-emailConfig.init();
-
 async function savePhoto() {
     try {
         if (!currentUser) return;
