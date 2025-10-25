@@ -1,4 +1,5 @@
 // Basic Express server template for Code Ninjas Halloween Photobooth
+const https = require("https");
 const express = require('express');
 const path = require('path');
 const app = express();
