@@ -1,5 +1,9 @@
 // Shared JS for registration and photobooth pages
 import { registerUser, getUserByUuid, getRegistrations } from './firebase-config.js';
+import { emailSender } from './email-sender.js';
+
+// Initialize EmailJS
+emailSender.init();
 
 // Example: Registration form handler
 const regForm = document.getElementById('registration-form');
@@ -23,7 +27,7 @@ if (regForm) {
         if (qrContainer) qrContainer.style.display = 'none';
         return;
       }
-      resultEl.textContent = 'Registration saved successfully!';
+      resultEl.textContent = 'Registration saved successfully! Sending confirmation email...';
       // show QR if server returned an url
       if (data && data.qrUrl) {
         const qrImage = document.getElementById('qr-image');
@@ -31,6 +35,14 @@ if (regForm) {
         if (qrImage && qrContainer) {
           qrImage.src = data.qrUrl;
           qrContainer.style.display = 'block';
+
+          // Send registration confirmation email
+          const emailResult = await emailSender.sendRegistrationEmail(payload, data.qrUrl);
+          if (emailResult.success) {
+            resultEl.textContent = 'Registration complete! Check your email for the QR code.';
+          } else {
+            resultEl.textContent = 'Registration saved but email delivery failed. Please save your QR code.';
+          }
         }
       }
       // Optionally clear the form after successful registration

@@ -1,8 +1,9 @@
 // EmailJS configuration
 export const emailConfig = {
-    serviceID: "default_service", // Replace with your EmailJS service ID
-    templateID: "template_halloween", // Replace with your EmailJS template ID
-    userID: "YOUR_USER_ID", // Replace with your EmailJS user ID
+    serviceID: "service_c0hpqoq",
+    registrationTemplateID: "template_s3qokgs",
+    photoTemplateID: "template_y84ucwx",
+    userID: "MIfpVTY7IHHWF7v1l",
     init: function() {
         emailjs.init(this.userID);
     }

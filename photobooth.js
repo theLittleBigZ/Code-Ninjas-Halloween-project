@@ -1,5 +1,5 @@
-import { getUserByUuid, updateRegistration } from './firebase-config.js';
-import { emailConfig } from './email-config.js';
+https://thelittlebigz.github.io/Code-Ninjas-Halloween-project/user/072269b9-6b6c-4460-bd3d-50d78c2e5fe5import { getUserByUuid, updateRegistration } from './firebase-config.js';
+import { emailSender } from './email-sender.js';
 
 let currentStream = null;
 let scanning = false;
@@ -204,21 +204,11 @@ async function savePhoto() {
         scanStatus.textContent = 'Sending photo...';
         scanStatus.className = 'status loading';
         
-        // Prepare email parameters
-        const emailParams = {
-            to_email: currentUser.email,
-            to_name: `${currentUser.parentFirst} ${currentUser.parentLast}`,
-            photo_number: photosTaken,
-            total_photos: currentUser.numPhotos || 1,
-            photo_data: preview.src,
-            children_names: currentUser.children || 'your children'
-        };
-
-        // Send email using EmailJS
-        await emailjs.send(
-            emailConfig.serviceID,
-            emailConfig.templateID,
-            emailParams
+        // Send photo via email using emailSender
+        const emailResult = await emailSender.sendPhotoEmail(
+            currentUser,
+            preview.src,
+            (currentUser.numPhotos || 1) - photosTaken
         );
 
         // Update registration with new photo count
