@@ -1,5 +1,6 @@
 import { getUserByUuid, updateRegistration } from './firebase-config.js';
 import { emailSender } from './email-sender.js';
+import { imageUtils } from './image-utils.js';
 
 // Initialize EmailJS
 emailSender.init();
@@ -183,12 +184,29 @@ function displayUserInfo(user) {
 // Capture photo
 function capturePhoto() {
     const canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    const context = canvas.getContext('2d');
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    // Limit initial capture size to reasonable dimensions
+    const maxDimension = 1200;
+    let width = video.videoWidth;
+    let height = video.videoHeight;
     
-    preview.src = canvas.toDataURL('image/png');
+    // Scale down if needed
+    if (width > maxDimension || height > maxDimension) {
+        if (width > height) {
+            height = Math.round((height * maxDimension) / width);
+            width = maxDimension;
+        } else {
+            width = Math.round((width * maxDimension) / height);
+            height = maxDimension;
+        }
+    }
+    
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext('2d');
+    context.drawImage(video, 0, 0, width, height);
+    
+    // Use JPEG instead of PNG for smaller file size
+    preview.src = canvas.toDataURL('image/jpeg', 0.9);
     previewContainer.classList.remove('hidden');
     captureButton.disabled = true;
 }
@@ -204,10 +222,13 @@ async function savePhoto() {
         scanStatus.textContent = 'Sending photo...';
         scanStatus.className = 'status loading';
         
+        // Compress the image before sending
+        const compressedImage = await imageUtils.compressImage(preview.src);
+        
         // Send photo via email using emailSender
         const emailResult = await emailSender.sendPhotoEmail(
             currentUser,
-            preview.src,
+            compressedImage,
             (currentUser.numPhotos || 1) - photosTaken
         );
 
