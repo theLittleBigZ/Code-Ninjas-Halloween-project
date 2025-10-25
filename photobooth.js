@@ -1,5 +1,8 @@
-https://thelittlebigz.github.io/Code-Ninjas-Halloween-project/user/072269b9-6b6c-4460-bd3d-50d78c2e5fe5import { getUserByUuid, updateRegistration } from './firebase-config.js';
+import { getUserByUuid, updateRegistration } from './firebase-config.js';
 import { emailSender } from './email-sender.js';
+
+// Initialize EmailJS
+emailSender.init();
 
 let currentStream = null;
 let scanning = false;
@@ -210,6 +213,10 @@ async function savePhoto() {
             preview.src,
             (currentUser.numPhotos || 1) - photosTaken
         );
+
+        if (!emailResult.success) {
+            throw new Error('Failed to send photo via email');
+        }
 
         // Update registration with new photo count
         await updateRegistration(currentUser.uuid, {
