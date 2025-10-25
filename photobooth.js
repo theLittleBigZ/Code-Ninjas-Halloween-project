@@ -1,4 +1,5 @@
-import { getUserByUuid, updateRegistration, savePhotoToStorage } from './firebase-config.js';
+import { getUserByUuid, updateRegistration } from './firebase-config.js';
+import { emailConfig } from './email-config.js';
 
 let currentStream = null;
 let scanning = false;
@@ -118,6 +119,27 @@ async function handleQRCode(data) {
         
         if (result.ok && result.record) {
             currentUser = result.record;
+            
+            // Check if user has any photos remaining
+            const photosTaken = currentUser.photosTaken || 0;
+            const totalPhotos = currentUser.numPhotos || 1;
+            
+            if (photosTaken >= totalPhotos) {
+                scanStatus.textContent = 'You have used all your photo opportunities. Please register again for more photos.';
+                scanStatus.className = 'status error';
+                captureButton.disabled = true;
+                
+                // Create registration link
+                const registerLink = document.createElement('a');
+                registerLink.href = './index.html';
+                registerLink.textContent = 'Click here to register again';
+                registerLink.style.display = 'block';
+                registerLink.style.marginTop = '10px';
+                scanStatus.appendChild(registerLink);
+                
+                return;
+            }
+            
             displayUserInfo(currentUser);
             scanning = false;
             captureButton.disabled = false;
@@ -135,11 +157,23 @@ async function handleQRCode(data) {
 
 // Display user information
 function displayUserInfo(user) {
+    const photosRemaining = (user.numPhotos || 1) - (user.photosTaken || 0);
+    
     document.getElementById('user-name').textContent = `${user.parentFirst} ${user.parentLast}`;
     document.getElementById('user-email').textContent = user.email;
     document.getElementById('user-children').textContent = user.children || 'Not specified';
-    document.getElementById('photos-remaining').textContent = 
-        (user.numPhotos || 1) - (user.photosTaken || 0);
+    document.getElementById('photos-remaining').textContent = photosRemaining;
+    
+    // Add warning if photos are running low
+    const photosRemainingElement = document.getElementById('photos-remaining');
+    if (photosRemaining === 1) {
+        photosRemainingElement.style.color = '#ff6b6b';
+        photosRemainingElement.title = 'This is your last photo! Register again if you want more photos.';
+    } else {
+        photosRemainingElement.style.color = '';
+        photosRemainingElement.title = '';
+    }
+    
     userInfo.classList.remove('hidden');
 }
 
@@ -157,20 +191,34 @@ function capturePhoto() {
 }
 
 // Save photo to Firebase
+// Initialize EmailJS when the page loads
+emailConfig.init();
+
 async function savePhoto() {
     try {
         if (!currentUser) return;
         
         const photosTaken = (currentUser.photosTaken || 0) + 1;
         
-        // Save the photo to Firebase Storage
-        scanStatus.textContent = 'Saving photo...';
+        // Send photo via email
+        scanStatus.textContent = 'Sending photo...';
         scanStatus.className = 'status loading';
         
-        const result = await savePhotoToStorage(
-            currentUser.uuid,
-            photosTaken,
-            preview.src
+        // Prepare email parameters
+        const emailParams = {
+            to_email: currentUser.email,
+            to_name: `${currentUser.parentFirst} ${currentUser.parentLast}`,
+            photo_number: photosTaken,
+            total_photos: currentUser.numPhotos || 1,
+            photo_data: preview.src,
+            children_names: currentUser.children || 'your children'
+        };
+
+        // Send email using EmailJS
+        await emailjs.send(
+            emailConfig.serviceID,
+            emailConfig.templateID,
+            emailParams
         );
 
         // Update registration with new photo count
@@ -180,7 +228,7 @@ async function savePhoto() {
         });
 
         // Show success message
-        scanStatus.textContent = 'Photo saved successfully!';
+        scanStatus.textContent = 'Photo sent successfully!';
         scanStatus.className = 'status success';
 
         // Reset UI for next photo

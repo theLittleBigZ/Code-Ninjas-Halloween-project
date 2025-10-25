@@ -1,7 +1,6 @@
 // Firebase configuration and initialization
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
 import { getDatabase, ref, set, get, query, orderByChild, update } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-database.js";
-import { getStorage, ref as storageRef, uploadString } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-storage.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC6I2EUG1Blyl0F0YD-Mrbtv5JwcJG8JSk",
