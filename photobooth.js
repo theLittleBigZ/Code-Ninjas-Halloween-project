@@ -5,11 +5,15 @@ let scanning = false;
 let currentUser = null;
 let photoCount = 0;
 
+// Base URL for the application
+const BASE_URL = 'https://thelittlebigz.github.io/Code-Ninjas-Halloween-project';
+
 // DOM Elements
 const video = document.getElementById('video');
 const qrCanvas = document.getElementById('qr-canvas');
 const startButton = document.getElementById('start-camera');
 const switchButton = document.getElementById('switch-camera');
+const scanButton = document.getElementById('scan-qr');
 const captureButton = document.getElementById('capture-photo');
 const cameraSelect = document.getElementById('camera-select');
 const scanStatus = document.getElementById('scan-status');
@@ -59,14 +63,13 @@ async function startCamera() {
         currentStream = await navigator.mediaDevices.getUserMedia(constraints);
         video.srcObject = currentStream;
         
-        // Wait for video to be ready before starting QR scan
+        // Wait for video to be ready
         video.addEventListener('loadedmetadata', () => {
             video.play();
-            scanning = true;
-            scanQRCode();
+            startButton.textContent = 'Stop Camera';
+            scanButton.disabled = false;
         });
         
-        startButton.textContent = 'Stop Camera';
         captureButton.disabled = true;
     } catch (error) {
         console.error('Error starting camera:', error);
@@ -109,7 +112,8 @@ function scanQRCode() {
 // Handle QR code data
 async function handleQRCode(data) {
     try {
-        const uuid = data.split('/').pop();
+        // Extract UUID from the full URL
+        const uuid = data.replace(`${BASE_URL}/user/`, '');
         const result = await getUserByUuid(uuid);
         
         if (result.ok && result.record) {
@@ -117,7 +121,7 @@ async function handleQRCode(data) {
             displayUserInfo(currentUser);
             scanning = false;
             captureButton.disabled = false;
-            startButton.textContent = 'Restart Scanning';
+            scanButton.textContent = 'Scan New Code';
             scanStatus.textContent = 'User verified! Ready to take photos.';
             scanStatus.className = 'status success';
         }
@@ -125,6 +129,7 @@ async function handleQRCode(data) {
         console.error('Error processing QR code:', error);
         scanStatus.textContent = 'Invalid QR code';
         scanStatus.className = 'status error';
+        scanning = false;
     }
 }
 
@@ -188,9 +193,25 @@ startButton.addEventListener('click', () => {
         currentStream.getTracks().forEach(track => track.stop());
         currentStream = null;
         startButton.textContent = 'Start Camera';
+        scanButton.disabled = true;
         captureButton.disabled = true;
     } else {
         startCamera();
+    }
+});
+
+// QR Code scanning button
+scanButton.addEventListener('click', () => {
+    if (scanning) {
+        scanning = false;
+        scanButton.textContent = 'Scan QR Code';
+        scanStatus.textContent = '';
+    } else {
+        scanning = true;
+        scanButton.textContent = 'Stop Scanning';
+        scanStatus.textContent = 'Scanning for QR Code...';
+        scanStatus.className = 'status loading';
+        scanQRCode();
     }
 });
 

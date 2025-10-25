@@ -29,7 +29,7 @@ export async function registerUser(userData) {
   };
 
   try {
-    const qrData = `${window.location.origin}/user/${encodeURIComponent(uuid)}`;
+    const qrData = `https://thelittlebigz.github.io/Code-Ninjas-Halloween-project/user/${encodeURIComponent(uuid)}`;
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=650x650&data=${encodeURIComponent(qrData)}`;
     
     // Add QR code URL to the record
