@@ -1,5 +1,16 @@
 {
+  "name": "code-ninjas-halloween-project",
+  "version": "1.0.0",
+  "private": true,
   "dependencies": {
     "firebase": "^12.4.0"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "scripts": {
+    "start": "http-server . -p 8080 -c-1",
+    "predeploy": "echo 'Ready for GitHub Pages deployment'",
+    "deploy": "echo 'Deploy by pushing to your GitHub repository'"
   }
 }

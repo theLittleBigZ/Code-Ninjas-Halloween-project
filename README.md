@@ -36,10 +36,14 @@ The project uses Firebase for data storage. The configuration is already set up 
    c. Update the configuration in `public/firebase-config.js`
 
 4. Deploy to GitHub Pages:
-   a. Go to your repository settings
-   b. Enable GitHub Pages
-   c. Select the branch you want to deploy
-   d. Set the root directory to `/docs` or `/public`
+   a. Push your changes to GitHub
+   b. Go to your repository settings
+   c. Navigate to "Pages" under "Code and automation"
+   d. Under "Source", select "Deploy from a branch"
+   e. Select your main branch and set the directory to "/" (root)
+   f. Click "Save"
+   g. Wait a few minutes for the deployment to complete
+   h. Your site will be available at `https://<username>.github.io/<repository-name>`
 
 ### Usage
 
@@ -72,13 +76,13 @@ The project uses Firebase for data storage. The configuration is already set up 
 
 ### Project Structure
 ```
-public/
 ├── index.html           # Registration page
 ├── photobooth.html     # Photo booth interface
 ├── db-viewer.html      # Admin dashboard
 ├── script.js           # Main JavaScript file
 ├── firebase-config.js  # Firebase configuration
-└── style.css          # Shared styles
+├── style.css          # Shared styles
+└── .nojekyll          # Prevents GitHub Pages from using Jekyll
 ```
 
 ### Security Considerations

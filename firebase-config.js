@@ -31,9 +31,17 @@ export async function registerUser(userData) {
   };
 
   try {
-    await set(ref(database, `registrations/${uuid}`), record);
     const qrData = `${window.location.origin}/user/${encodeURIComponent(uuid)}`;
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=650x650&data=${encodeURIComponent(qrData)}`;
+    
+    // Add QR code URL to the record
+    const recordWithQr = {
+      ...record,
+      qrUrl,
+      qrData
+    };
+
+    await set(ref(database, `registrations/${uuid}`), recordWithQr);
     return { ok: true, id, uuid, qrUrl };
   } catch (error) {
     console.error('Error registering user:', error);

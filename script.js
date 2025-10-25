@@ -79,6 +79,11 @@ async function loadRegistrations() {
         <td>${row.phone || ''}</td>
         <td>${row.children || ''}</td>
         <td>${row.ages || ''}</td>
+        <td>
+          ${row.qrUrl ? `<a href="${row.qrUrl}" target="_blank">
+            <img src="${row.qrUrl}" alt="QR Code" style="width:50px; height:50px;">
+          </a>` : 'No QR Code'}
+        </td>
       </tr>
     `).join('');
   } catch (err) {
