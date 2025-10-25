@@ -59,8 +59,12 @@ async function startCamera() {
         currentStream = await navigator.mediaDevices.getUserMedia(constraints);
         video.srcObject = currentStream;
         
-        scanning = true;
-        scanQRCode();
+        // Wait for video to be ready before starting QR scan
+        video.addEventListener('loadedmetadata', () => {
+            video.play();
+            scanning = true;
+            scanQRCode();
+        });
         
         startButton.textContent = 'Stop Camera';
         captureButton.disabled = true;
@@ -73,11 +77,17 @@ async function startCamera() {
 
 // Scan for QR codes
 function scanQRCode() {
-    if (!scanning) return;
+    if (!scanning || !video.videoWidth) return;
 
     const context = qrCanvas.getContext('2d');
     qrCanvas.width = video.videoWidth;
     qrCanvas.height = video.videoHeight;
+    
+    // Only proceed if we have valid dimensions
+    if (qrCanvas.width === 0 || qrCanvas.height === 0) {
+        requestAnimationFrame(scanQRCode);
+        return;
+    }
     
     context.drawImage(video, 0, 0, qrCanvas.width, qrCanvas.height);
     const imageData = context.getImageData(0, 0, qrCanvas.width, qrCanvas.height);
