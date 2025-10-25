@@ -1,4 +1,4 @@
-import { getUserByUuid, database, ref, update } from './firebase-config.js';
+import { getUserByUuid, updateRegistration } from './firebase-config.js';
 
 let currentStream = null;
 let scanning = false;
@@ -147,8 +147,7 @@ async function savePhoto() {
         if (!currentUser) return;
         
         const photosTaken = (currentUser.photosTaken || 0) + 1;
-        const db = getDatabase();
-        await update(ref(db, `registrations/${currentUser.uuid}`), {
+        await updateRegistration(currentUser.uuid, {
             photosTaken,
             lastPhotoAt: new Date().toISOString()
         });

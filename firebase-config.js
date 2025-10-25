@@ -1,7 +1,6 @@
 // Firebase configuration and initialization
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
 import { getDatabase, ref, set, get, query, orderByChild, update } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-database.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-analytics.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC6I2EUG1Blyl0F0YD-Mrbtv5JwcJG8JSk",
@@ -16,7 +15,6 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
 const database = getDatabase(app);
 
 // Firebase helper functions
@@ -84,5 +82,13 @@ export async function getRegistrations() {
   }
 }
 
-// Export database and update for use in other modules
-export { database, getDatabase, ref, update };
+// Function to update registration data
+export async function updateRegistration(uuid, data) {
+  try {
+    await update(ref(database, `registrations/${uuid}`), data);
+    return { ok: true };
+  } catch (error) {
+    console.error('Error updating registration:', error);
+    throw error;
+  }
+}
