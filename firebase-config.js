@@ -1,6 +1,7 @@
 // Firebase configuration and initialization
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
 import { getDatabase, ref, set, get, query, orderByChild, update } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-database.js";
+import { getStorage, ref as storageRef, uploadString } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-storage.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC6I2EUG1Blyl0F0YD-Mrbtv5JwcJG8JSk",
@@ -16,6 +17,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
+const storage = getStorage(app);
 
 // Firebase helper functions
 export async function registerUser(userData) {
@@ -89,6 +91,34 @@ export async function updateRegistration(uuid, data) {
     return { ok: true };
   } catch (error) {
     console.error('Error updating registration:', error);
+    throw error;
+  }
+}
+
+// Function to save photo to Firebase Storage
+export async function savePhotoToStorage(uuid, photoNumber, photoDataUrl) {
+  try {
+    const photoPath = `photos/${uuid}/${photoNumber}.jpg`;
+    const imageRef = storageRef(storage, photoPath);
+    
+    // Remove the data URL prefix
+    const base64Data = photoDataUrl.split(',')[1];
+    
+    // Upload the photo
+    await uploadString(imageRef, base64Data, 'base64');
+    
+    // Get the download URL
+    const downloadURL = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/${encodeURIComponent(photoPath)}?alt=media`;
+    
+    // Update the registration with the photo URL
+    await update(ref(database, `registrations/${uuid}/photos/${photoNumber}`), {
+      url: downloadURL,
+      takenAt: new Date().toISOString()
+    });
+    
+    return { ok: true, url: downloadURL };
+  } catch (error) {
+    console.error('Error saving photo:', error);
     throw error;
   }
 }

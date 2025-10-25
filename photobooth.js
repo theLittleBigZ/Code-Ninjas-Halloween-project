@@ -1,4 +1,4 @@
-import { getUserByUuid, updateRegistration } from './firebase-config.js';
+import { getUserByUuid, updateRegistration, savePhotoToStorage } from './firebase-config.js';
 
 let currentStream = null;
 let scanning = false;
@@ -162,10 +162,26 @@ async function savePhoto() {
         if (!currentUser) return;
         
         const photosTaken = (currentUser.photosTaken || 0) + 1;
+        
+        // Save the photo to Firebase Storage
+        scanStatus.textContent = 'Saving photo...';
+        scanStatus.className = 'status loading';
+        
+        const result = await savePhotoToStorage(
+            currentUser.uuid,
+            photosTaken,
+            preview.src
+        );
+
+        // Update registration with new photo count
         await updateRegistration(currentUser.uuid, {
             photosTaken,
             lastPhotoAt: new Date().toISOString()
         });
+
+        // Show success message
+        scanStatus.textContent = 'Photo saved successfully!';
+        scanStatus.className = 'status success';
 
         // Reset UI for next photo
         previewContainer.classList.add('hidden');
