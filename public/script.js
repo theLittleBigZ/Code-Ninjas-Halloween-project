@@ -1,6 +1,5 @@
 // Shared JS for registration and photobooth pages
-// TODO: Add form submission logic for registration
-// TODO: Add QR code scanning and photo capture logic for photobooth
+import { registerUser, getUserByUuid, getRegistrations } from './firebase-config.js';
 
 // Example: Registration form handler
 const regForm = document.getElementById('registration-form');
@@ -16,21 +15,15 @@ if (regForm) {
     formData.forEach((v, k) => { payload[k] = v; });
 
     try {
-      const resp = await fetch('/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
-      const data = await resp.json().catch(() => ({}));
-      if (!resp.ok) {
-        resultEl.textContent = data && data.error ? `Error: ${data.error}` : 'Registration failed';
+      const data = await registerUser(payload);
+      if (!data.ok) {
+        resultEl.textContent = data.error || 'Registration failed';
         // hide QR if present
         const qrContainer = document.getElementById('qr-container');
         if (qrContainer) qrContainer.style.display = 'none';
         return;
       }
-      resultEl.textContent = 'Registration saved — record appended to db.csv.';
+      resultEl.textContent = 'Registration saved successfully!';
       // show QR if server returned an url
       if (data && data.qrUrl) {
         const qrImage = document.getElementById('qr-image');
@@ -66,5 +59,34 @@ if (clearBtn && regForm) {
   });
 }
 
-// Example: Photobooth logic (to be implemented)
-// ...
+// Admin page: Load registrations
+async function loadRegistrations() {
+  const tableBody = document.getElementById('registrations-table-body');
+  if (!tableBody) return;
+
+  try {
+    const data = await getRegistrations();
+    if (!data.ok || !data.rows) {
+      console.error('Failed to load registrations');
+      return;
+    }
+
+    tableBody.innerHTML = data.rows.map(row => `
+      <tr>
+        <td>${row.createdAt}</td>
+        <td>${row.parentFirst} ${row.parentLast}</td>
+        <td>${row.email}</td>
+        <td>${row.phone || ''}</td>
+        <td>${row.children || ''}</td>
+        <td>${row.ages || ''}</td>
+      </tr>
+    `).join('');
+  } catch (err) {
+    console.error('Error loading registrations:', err);
+  }
+}
+
+// Load registrations on admin page if table exists
+if (document.getElementById('registrations-table-body')) {
+  loadRegistrations();
+}

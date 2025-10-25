@@ -1,10 +1,5 @@
 {
   "dependencies": {
-    "express": "^5.1.0",
-    "knex": "^2.5.1",
-    "sqlite3": "^5.1.6"
-  },
-  "scripts": {
-    "migrate": "knex --knexfile knexfile.js migrate:latest"
+    "firebase": "^12.4.0"
   }
 }

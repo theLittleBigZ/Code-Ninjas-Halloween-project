@@ -1,93 +1,103 @@
-# Code-Ninjas-Halloween-project
+# Code Ninjas Halloween Photo Booth Project
 
 ### Project Overview
-This project is going to be used in an upcoming Halloween event, we are going to be creating an automated photo-booth this photobooth has 2 parts a registration form for users to signup once they have signed up they will be emailed a QR code, and will wait in line to get to the photo booth once at the photobooth they will scan the qrcode code to start the photobooth the photobooth will take photos and apply edits to them then email them to the user
+This is a web-based photo booth application for Halloween events at Code Ninjas. The application consists of two main parts:
+1. A registration form where parents/guardians can register their children
+2. A photo booth interface that uses QR codes to identify registered users and capture photos
 
-### Registration 
-For the user registration the following is needed
-- Parent / guardian first name
-- Parent / guardian last name
-- Parent / guardian Email
-- Parent / guardian Phone number
-- Postal code
-- how many photos to take
-- Child(ern) names
-- Child(ern) ages
-this infomation will be used to make a QR code and must be saved for use later
+The application uses Firebase for data storage and can be hosted on GitHub Pages, making it easily accessible without need for a dedicated server.
 
-### PhotoBooth 
-Will be running on a tablet and will take a photo of the user and apply edits to them and email it out the the user
+### Features
+- User registration with automatic QR code generation
+- QR code scanning in photo booth interface
+- Real-time data storage using Firebase
+- Photo capture with built-in camera access
+- QR code detection in captured photos
+- Admin dashboard for viewing registrations
 
-### Student Project Checklist
+### Setup Instructions
 
-#### Registration Page (public/index.html, script.js)
-- [ ] Build the registration form with all required fields (see project overview)
-- [ ] Validate form input on the client side
-- [ ] Send registration data to the backend (server.js)
-- [ ] Show a success message after registration
-- [ ] (Optional) Show QR code after registration
+1. Clone the repository:
+```bash
+git clone https://github.com/theLittleBigZ/Code-Ninjas-Halloween-project.git
+cd Code-Ninjas-Halloween-project
+```
 
-#### Backend (server.js)
-- [ ] Create an endpoint to receive registration data and save it (in memory, file, or database)
-- [ ] Generate a unique UUID for each registration
-- [ ] Generate a QR code for the user (use a simple npm package or API)
-- [ ] Email the QR code to the user (use nodemailer or similar)
-- [ ] Store registration info for later lookup
-
-#### Photobooth Page (public/photobooth.html, script.js)
-- [ ] Add a QR code scanner (use a simple JS library or placeholder)
-- [ ] Fetch user info from backend using scanned UUID
-- [ ] Show user info and allow photo capture (use getUserMedia or placeholder)
-- [ ] Allow employee to take/upload photo
-- [ ] Send photo to backend for processing
-- [ ] Backend: receive photo, apply simple edit (e.g., grayscale, overlay), and email to user
-- [ ] Mark user as "photo taken" in storage
-
-#### General
-- [ ] Style the pages (public/style.css)
-- [ ] Test the full flow end-to-end
-- [ ] Add comments to your code
-
-#### Stretch Goals (Optional)
-- [ ] Add Google Sheets integration for registration data
-- [ ] Add more advanced photo effects
-- [ ] Add admin dashboard to view registrations
-
----
-
-## Database (SQLite) setup
-
-This project now uses SQLite (via Knex) for storing registrations in `data/dev.sqlite3`.
-
-Quick steps to set up the database locally:
-
-1. Install dependencies (if you haven't already):
-
+2. Install dependencies:
 ```bash
 npm install
 ```
 
-2. Create the data directory (if it doesn't exist) and run migrations to create the `registrations` table:
+3. Firebase Configuration:
+The project uses Firebase for data storage. The configuration is already set up in `public/firebase-config.js`. If you need to use your own Firebase project:
 
-```bash
-mkdir -p data
-npx knex --knexfile knexfile.js migrate:latest
+   a. Create a new project in [Firebase Console](https://console.firebase.google.com/)
+   b. Enable Realtime Database
+   c. Update the configuration in `public/firebase-config.js`
+
+4. Deploy to GitHub Pages:
+   a. Go to your repository settings
+   b. Enable GitHub Pages
+   c. Select the branch you want to deploy
+   d. Set the root directory to `/docs` or `/public`
+
+### Usage
+
+#### Registration Form
+1. Open the registration page
+2. Fill in the required information:
+   - Parent/guardian first name
+   - Parent/guardian last name
+   - Parent/guardian email
+   - Phone number (optional)
+   - Postal code
+   - Number of photos
+   - Children's names
+   - Children's ages
+3. Submit the form to receive a QR code
+
+#### Photo Booth Interface
+1. Open the photo booth page
+2. Use the camera to scan a user's QR code
+3. Once verified:
+   - The system will show the registration details
+   - Allow photo capture
+   - Process the photo
+   - Save to Firebase storage
+
+#### Admin Dashboard
+1. Access the admin page at `/db-viewer.html`
+2. View all registrations in real-time
+3. Use the search filter to find specific registrations
+
+### Project Structure
+```
+public/
+├── index.html           # Registration page
+├── photobooth.html     # Photo booth interface
+├── db-viewer.html      # Admin dashboard
+├── script.js           # Main JavaScript file
+├── firebase-config.js  # Firebase configuration
+└── style.css          # Shared styles
 ```
 
-3. Start the server and test the registration form:
+### Security Considerations
+- The Firebase configuration is public but restricted by security rules
+- Admin access should be protected in production
+- QR codes contain unique UUIDs for user identification
 
-```bash
-node server.js
-# then open http://localhost:3000 in your browser and use the registration form
-```
+### Development
+To run the project locally:
+1. Clone the repository
+2. Open `public/index.html` in a web browser
+3. No local server is required as it's purely client-side
 
-What was added
-- `knexfile.js` — Knex configuration (development uses `./data/dev.sqlite3`)
-- `db.js` — simple Knex connection helper
-- `migrations/20250913_create_registrations.js` — migration to create the `registrations` table
-- Updated `server.js` to insert registrations into the DB and read by `uuid`
+### Contributing
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
 
-Notes
-- The project intentionally skips importing existing `db.csv` test data. If you want to import it later, I can add a migration/import script.
-- Don't commit `data/dev.sqlite3` to git; `.gitignore` already ignores the `data/` directory.
-- To switch to Postgres later, update `knexfile.js` to use `pg` and set the connection via environment variables.
+### License
+See the [LICENSE](LICENSE) file for details.
