@@ -1,6 +1,6 @@
 // Firebase configuration and initialization
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
-import { getDatabase, ref, set, get, query, orderByChild } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-database.js";
+import { getDatabase, ref, set, get, query, orderByChild, update } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-database.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-analytics.js";
 
 const firebaseConfig = {
@@ -83,3 +83,6 @@ export async function getRegistrations() {
     throw error;
   }
 }
+
+// Export database and update for use in other modules
+export { database, getDatabase, ref, update };
